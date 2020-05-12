@@ -30,8 +30,8 @@ if(!class_exists('WPLiveStatisticsEvents')){
             //add_action( 'delete_site_transient_update_themes', array( $this, '_delete_site_transient_update_themes' ) );
             //add_action( 'upgrader_process_complete', array( $this, 'wp_a_log_upgrader_process_complete' ), 10, 2 );
 
-            add_action( 'activated_plugin', array( $this, '_activated_plugin' ) );
-            add_action( 'deactivated_plugin', array( $this, '_deactivated_plugin' ) );
+            //add_action( 'activated_plugin', array( $this, '_activated_plugin' ) );
+            //add_action( 'deactivated_plugin', array( $this, '_deactivated_plugin' ) );
             //add_action( 'delete_plugins', array( $this, '_delete_plugins' ) );
 
             add_action( 'wp_login', array( $this, '_wp_login' ) );

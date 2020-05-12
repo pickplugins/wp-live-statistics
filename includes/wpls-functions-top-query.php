@@ -418,46 +418,32 @@ if ( ! defined('ABSPATH')) exit; // if direct access
 
 
 //query top operating system(Platform)
-	function wpls_TopOS($platform)
-		{
-			global $wpdb;
-			$table = $wpdb->prefix . "wpls";
-			$result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
-			$total_rows = $wpdb->num_rows;
+	function wpls_TopOS($platform){
+
+        $platform=="platform";
+
+        global $wpdb;
+        $table = $wpdb->prefix . "wpls";
+        $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+        $total_rows = $wpdb->num_rows;
+
+        $count_platform = $wpdb->get_results("SELECT platform, COUNT(*) AS platform FROM $table GROUP BY platform ORDER BY COUNT(platform) DESC LIMIT 10", ARRAY_A);
+
+        $top_platform ="";
+
+        $i=0;
+
+        while($total_rows>$i){
+
+            $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+            $platform_total = isset($count_platform[$i]['platform']) ? $count_platform[$i]['platform'] : '';
+
+            $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
 
 
-
-
-			if($platform=="platform")
-				{
-					$count_platform = $wpdb->get_results("SELECT platform, COUNT(*) AS platform FROM $table GROUP BY platform ORDER BY COUNT(platform) DESC LIMIT 10", ARRAY_A);
-				}
-
-			$top_platform ="";
-
-			$i=0;
-
-			while($total_rows>$i)
-				{	
-					if($result[$i][$platform]==NULL || $result[$i][$platform]==""  )
-						{
-
-						}
-					else
-						{
-
-							
-							if($platform=="platform")
-								{
-									$top_platform.= "['".$result[$i][$platform]."(".$count_platform[$i]['platform'].")',";
-									$top_platform.= $count_platform[$i]['platform'];
-								}
-							$top_platform.= "],";
-
-						}
-		
-				$i++;
-			}
+        $i++;
+        }
+        
 		return $top_platform;
 	}
 
