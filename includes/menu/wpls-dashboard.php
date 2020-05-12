@@ -17,24 +17,12 @@ wp_enqueue_style( 'font-awesome-5' );
 
 
             <?php
-                $wpls_refresh_time = get_option( 'wpls_refresh_time' );
 
-                if(!empty($wpls_refresh_time))
-                    {
-                        if($wpls_refresh_time < 3000)
-                            {
-                                $wpls_refresh_time = '3000';
-                            }
-                        else
-                            {
-                            $wpls_refresh_time = $wpls_refresh_time;
-                            }
+            $wpls_settings = get_option('wpls_settings');
+            $refresh_time = isset($wpls_settings['refresh_time']) ? $wpls_settings['refresh_time'] : 10000;
 
-                    }
-                else
-                    {
-                        $wpls_refresh_time = '3000';
-                    }
+            $refresh_time = ($refresh_time > 3000) ? $refresh_time : 10000;
+
 
             ?>
 
@@ -53,7 +41,7 @@ wp_enqueue_style( 'font-awesome-5' );
                                             $(".total-online").html(data);
                                         }
                                     });
-                        }, <?php echo $wpls_refresh_time; ?>)
+                        }, <?php echo $refresh_time; ?>)
                                 });
 
             </script>

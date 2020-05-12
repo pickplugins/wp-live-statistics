@@ -20,11 +20,11 @@ if( ! class_exists( 'WPLiveStatistics' ) ) {
             define('wpls_plugin_url', plugins_url('/', __FILE__));
             define('wpls_plugin_dir', plugin_dir_path(__FILE__));
             define('wpls_plugin_name', 'WP Live Statistics');
-            define('wpls_plugin_version', '1.23.0');
 
+            if(!class_exists('Browser')){
+                require_once( wpls_plugin_dir . 'includes/Browser.php');
+            }
 
-
-            require_once( wpls_plugin_dir . 'includes/Browser.php');
             require_once( wpls_plugin_dir . 'includes/geoplugin.class.php');
             require_once( wpls_plugin_dir . 'includes/wpls-functions.php');
             require_once( wpls_plugin_dir . 'includes/wpls-functions-top-query.php');
@@ -34,6 +34,8 @@ if( ! class_exists( 'WPLiveStatistics' ) ) {
 
             require_once( wpls_plugin_dir . 'includes/functions-settings-hook.php');
             require_once( wpls_plugin_dir . 'includes/functions-stats.php');
+            require_once( wpls_plugin_dir . 'includes/class-functions.php');
+            require_once( wpls_plugin_dir . 'includes/class-events.php');
 
 
 
@@ -120,11 +122,12 @@ if( ! class_exists( 'WPLiveStatistics' ) ) {
 
         public function wpls_uninstall(){
 
-            $wpls_delete_data = get_option( 'wpls_delete_data' );
+
+            $wpls_settings = get_option('wpls_settings');
+            $delete_data = isset($wpls_settings['delete_data']) ? $wpls_settings['delete_data'] :  get_option( 'wpls_delete_data' );
 
 
-            if($wpls_delete_data=='yes')
-            {
+            if($delete_data=='yes') {
 
                 global $wpdb;
                 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wpls" );

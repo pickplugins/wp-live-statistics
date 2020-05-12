@@ -14,7 +14,7 @@ class class_wpls_settings{
 	
 	public	function wpls_menu_init(){
 
-        add_menu_page(__('WP Live Stats', 'breadcrumb'), __('WP Live Stats', 'breadcrumb'), 'manage_options', 'wp-live-statistics', array( $this, 'wpls_dashboard' ), 'dashicons-arrow-right-alt');
+        add_menu_page(__('WP Live Stats', 'breadcrumb'), __('WP Live Stats', 'breadcrumb'), 'manage_options', 'wp-live-statistics', array( $this, 'wpls_dashboard' ), 'dashicons-chart-line');
         add_submenu_page( 'wp-live-statistics', __( 'Settings', 'accordions' ), __( 'Settings', 'accordions' ), 'manage_options', 'wpls_settings', array( $this, 'wpls_settings' ) );
         add_submenu_page( 'wp-live-statistics', __( 'Live Visitors', 'accordions' ), __( 'Live Visitors', 'accordions' ), 'manage_options', 'wpls_admin_online', array( $this, 'wpls_admin_online' ) );
         add_submenu_page( 'wp-live-statistics', __( 'Visitors', 'accordions' ), __( 'Visitors', 'accordions' ), 'manage_options', 'wpls_admin_visitors', array( $this, 'wpls_admin_visitors' ) );

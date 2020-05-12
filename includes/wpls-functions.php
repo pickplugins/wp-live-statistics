@@ -3,89 +3,26 @@
 if ( ! defined('ABSPATH')) exit; // if direct access 
 
 
+add_action('wp_head', 'wpls_track_visitor');
+
+function wpls_track_visitor(){
+
+    $wpls_settings = get_option('wpls_settings');
+    $exclude_bots = isset($wpls_settings['exclude_bots']) ? $wpls_settings['exclude_bots'] : 'no';
 
 
+    $args = array();
 
-function wpls_visit()
-{
-
-    // date time data
-    $wpls_date = wpls_get_date();
-    $wpls_time = wpls_get_time();
-    $wpls_datetime = wpls_get_datetime();
-    $wpls_endtime = $wpls_datetime;
-
-    //device data
-    $browser = new Browser_wpls();
-    $platform = $browser->getPlatform();
-    $browser = $browser->getBrowser();
-    $screensize = wpls_get_screensize();
-
-    // geo data
-    $ip = $_SERVER['REMOTE_ADDR'];
-    $geoplugin = new geoPlugin();
-    $geoplugin->locate();
-    $city = $geoplugin->city;
-    $region = $geoplugin->region;
-    $countryName = $geoplugin->countryCode;
-
-    //referer data
-    $referer = wpls_get_referer();
-    $referer = explode(',',$referer);
-    $referer_doamin = $referer['0'];
-    $referer_url = $referer['1'];
+    $args['event'] = 'visit';
 
 
-    // url and page data
-    $userid = wpls_getuser();
-    $url_id_array = wpls_geturl_id();
-    $url_id_array = explode(',',$url_id_array);
-    $url_id = $url_id_array['0'];
-    $url_term = $url_id_array['1'];
+    $WPLiveStatisticsFunctions = new WPLiveStatisticsFunctions();
 
-    $event = "visit";
-
-    $isunique = wpls_get_unique();
-    $landing = wpls_landing();
-    $wpls_session_id = wpls_session();
-
-
-    global $wpdb;
-    $table = $wpdb->prefix . "wpls";
-
-    $wpdb->query( $wpdb->prepare("INSERT INTO $table 
-								( id, session_id, wpls_date, wpls_time, wpls_endtime, userid, event, browser, platform, ip, city, region, countryName, url_id, url_term, referer_doamin, referer_url, screensize, isunique, landing )
-			VALUES	( %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )",
-        array	( '', $wpls_session_id, $wpls_date, $wpls_time, $wpls_endtime, $userid, $event, $browser, $platform, $ip, $city, $region, $countryName, $url_id, $url_term, $referer_doamin, $referer_url, $screensize, $isunique, $landing )
-    ));
-
-
-
-
-    $table = $wpdb->prefix . "wpls_online";
-    $result = $wpdb->get_results("SELECT * FROM $table WHERE session_id='$wpls_session_id'", ARRAY_A);
-    $count = $wpdb->num_rows;
-
-
-
-
-    if($count==NULL)
-    {
-        $wpdb->query( $wpdb->prepare("INSERT INTO $table 
-								( id, session_id, wpls_time, userid, url_id, url_term, city, region, countryName, browser, platform, referer_doamin, referer_url) VALUES	(%d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-            array( '', $wpls_session_id, $wpls_datetime, $userid, $url_id, $url_term, $city, $region, $countryName, $browser, $platform, $referer_doamin, $referer_url)
-        ));
-    }
-    else
-    {
-        $wpdb->query("UPDATE $table SET wpls_time='$wpls_datetime', url_id='$url_id', referer_doamin='$referer_doamin', referer_url='$referer_url' WHERE session_id='$wpls_session_id'");
-    }
-
-
+    $WPLiveStatisticsFunctions->wpls_insert_visit($args);
+    $WPLiveStatisticsFunctions->wpls_insert_online($args);
 
 }
 
-add_action('wp_head', 'wpls_visit');
 
 
 
@@ -114,26 +51,12 @@ add_filter( 'gettext', 'change_username_wps_text' );
 
 // Function that outputs the contents of the dashboard widget
 function wpls_dashboard_widget( $post, $callback_args ) {
-	
-	
-	$wpls_refresh_time = get_option( 'wpls_refresh_time' );	
-	
-	if(!empty($wpls_refresh_time))
-		{
-			if($wpls_refresh_time < 3000)
-				{
-					$wpls_refresh_time = '3000';
-				}
-			else
-				{
-				$wpls_refresh_time = $wpls_refresh_time;
-				}
-			
-		}
-	else
-		{
-			$wpls_refresh_time = '3000';
-		}
+
+    $wpls_settings = get_option('wpls_settings');
+    $refresh_time = isset($wpls_settings['refresh_time']) ? $wpls_settings['refresh_time'] : 10000;
+
+    $refresh_time = ($refresh_time > 3000) ? $refresh_time : 10000;
+
 	
 	
 	?>
@@ -141,23 +64,21 @@ function wpls_dashboard_widget( $post, $callback_args ) {
 	<p class="total-online" style="text-align:center; font-size:30px;">0</p>
     
 	<script>		
-        jQuery(document).ready(function($)
-            {
-    
-                setInterval(function(){
-                    $.ajax(
+        jQuery(document).ready(function($) {
+            setInterval(function(){
+                $.ajax(
+                        {
+                    type: 'POST',
+                    url: wpls_ajax.wpls_ajaxurl,
+                    data: {"action": "wpls_ajax_online_total"},
+                    success: function(data)
                             {
-                        type: 'POST',
-                        url: wpls_ajax.wpls_ajaxurl,
-                        data: {"action": "wpls_ajax_online_total"},
-                        success: function(data)
-                                {
-                                    $(".total-online").html(data);
-                                }
-                            });	
-                }, <?php echo $wpls_refresh_time; ?>)
+                                $(".total-online").html(data);
+                            }
                         });
-                
+            }, <?php echo $refresh_time; ?>);
+
+        });
     </script> 
 
     <?php
@@ -234,7 +155,7 @@ function wpls_login($user_login, $user)
 	$wpls_datetime = wpls_get_datetime();	
 	$wpls_endtime = $wpls_datetime;
 	
-	$browser = new Browser_wpls();
+	$browser = new Browser();
 	$platform = $browser->getPlatform();
 	$browser = $browser->getBrowser();
 	
@@ -313,7 +234,7 @@ function wpls_logout()
 	$wpls_datetime = wpls_get_datetime();	
 	$wpls_endtime = $wpls_datetime;
 	
-	$browser = new Browser_wpls();
+	$browser = new Browser();
 	$platform = $browser->getPlatform();
 	$browser = $browser->getBrowser();
 	

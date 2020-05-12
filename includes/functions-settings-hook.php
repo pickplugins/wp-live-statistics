@@ -18,6 +18,8 @@ function wpls_settings_content_general(){
     $refresh_time = isset($wpls_settings['refresh_time']) ? $wpls_settings['refresh_time'] : $wpls_refresh_time;
     $google_api_key = isset($wpls_settings['google_api_key']) ? $wpls_settings['google_api_key'] : $wpls_google_api_key;
     $delete_data = isset($wpls_settings['delete_data']) ? $wpls_settings['delete_data'] : $wpls_delete_data;
+    $exclude_bots = isset($wpls_settings['exclude_bots']) ? $wpls_settings['exclude_bots'] : '';
+    $track_activity = isset($wpls_settings['track_activity']) ? $wpls_settings['track_activity'] : '';
 
     //echo '<pre>'.var_export($wpls_settings, true).'</pre>';
 
@@ -71,6 +73,33 @@ function wpls_settings_content_general(){
 
 
         $args = array(
+            'id'		=> 'exclude_bots',
+            'parent'		=> 'wpls_settings',
+            'title'		=> __('Exclude bots','wp-live-statistics'),
+            'details'	=> __('Want to exclude bots? like Google bots, Bing bots','wp-live-statistics'),
+            'type'		=> 'select',
+            'value'		=> $exclude_bots,
+            'default'		=> 'no',
+            'args'		=> array('no'=>__('No','wp-live-statistics'), 'yes'=>__('Yes','wp-live-statistics')  ),
+        );
+
+        $settings_tabs_field->generate_field($args);
+
+        $args = array(
+            'id'		=> 'track_activity',
+            'parent'		=> 'wpls_settings',
+            'title'		=> __('Track activity','wp-live-statistics'),
+            'details'	=> __('Enable track activity like purchase, comment, login, logout etc.','wp-live-statistics'),
+            'type'		=> 'select',
+            'value'		=> $track_activity,
+            'default'		=> 'no',
+            'args'		=> array('no'=>__('No','wp-live-statistics'), 'yes'=>__('Yes','wp-live-statistics')  ),
+        );
+
+        $settings_tabs_field->generate_field($args);
+
+
+        $args = array(
             'id'		=> 'delete_data',
             'parent'		=> 'wpls_settings',
             'title'		=> __('Font-awesome version','wp-live-statistics'),
@@ -82,6 +111,8 @@ function wpls_settings_content_general(){
         );
 
         $settings_tabs_field->generate_field($args);
+
+
 
 
         ?>
