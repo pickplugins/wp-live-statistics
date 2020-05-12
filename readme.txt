@@ -1,10 +1,10 @@
 === WP Live Statistics ===
 Contributors: pickplugins
 Donate link: 
-Tags:  statistics, wordpress statistics, wp statistics, live statistics,wordpress stats, live visitors, live Stats, web Stats, analytics, visitors count, stats
+Tags:  wordpress stats, analytics, visitor count, page view count, live visitors, live stats, web stats, google analytics
 Requires at least: 3.8
 Tested up to: 5.4
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,8 @@ take a test by visiting any page of your website.
 
 == Changelog ==
 
+= 1.3.1 =
+* 2020-05-12 - update - redesigned admin
 
 = 1.3 =
 * 05/06/2017 - fix - Google map issue fixed.

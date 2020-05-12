@@ -37,7 +37,7 @@ wp_enqueue_style( 'font-awesome-5' );
                 <input size="8" title="<?php echo __('Start date','job-board-manager'); ?>" type="text" class="job_bm_date" autocomplete="off" name="after" value="<?php echo $after_date; ?>" placeholder="<?php echo date('Y-m-d'); ?>" />
                 <input size="8" title="<?php echo __('End date','job-board-manager'); ?>" type="text" class="job_bm_date" autocomplete="off" name="before" value="<?php echo $before_date; ?>" placeholder="<?php echo date('Y-m-d'); ?>" />
                 <input type="hidden"  name="post_type" value="job" />
-                <input type="hidden"  name="page" value="job_bm_stats" />
+                <input type="hidden"  name="page" value="wpls_admin_visitors" />
                 <input type="hidden"  name="tab" value="<?php echo $tab; ?>" />
                 <input type="hidden"  name="date_range" value="custom" />
                 <input class="button" value="<?php echo __('Submit','job-board-manager'); ?>" type="submit">
@@ -53,7 +53,76 @@ wp_enqueue_style( 'font-awesome-5' );
             $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 1;
             $limit = 10;
             $offset = ( $pagenum - 1 ) * $limit;
-            $entries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpls ORDER BY id DESC LIMIT $offset, $limit" );
+            //$entries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpls ORDER BY id DESC LIMIT $offset, $limit" );
+
+            if($date_range == '7_day'){
+                $last_day = date("Y-m-d");
+                $first_date = date("Y-m-d", strtotime("7 days ago"));
+
+                $entries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpls WHERE wpls_date BETWEEN '$first_date' AND '$last_day' ORDER BY id DESC LIMIT $offset, $limit" );
+
+
+            }elseif($date_range == 'last_30_day'){
+                $last_day = date("Y-m-d");
+                $first_date = date("Y-m-d", strtotime("30 days ago"));
+
+                $entries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpls WHERE wpls_date BETWEEN '$first_date' AND '$last_day' ORDER BY id DESC LIMIT $offset, $limit" );
+
+
+            }
+            elseif($date_range == 'last_month'){
+                $last_day = date("Y-m-d");
+
+                $first_date = date("Y-m-d", strtotime("1 month ago"));
+                $dateBegin = strtotime("first day of last month");
+                $first_day = date("Y-m-d", $dateBegin);
+                $dateEnd = strtotime("last day of last month");
+                $last_day = date("Y-m-d", $dateEnd);
+
+
+                $entries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpls WHERE wpls_date BETWEEN '$first_day' AND '$last_day' ORDER BY id DESC LIMIT $offset, $limit" );
+
+
+            }elseif($date_range == 'this_month'){
+                $last_day = date("Y-m-d");
+
+                $month = date("m");
+                $year = date("Y");
+                $day = date("d");
+
+                $first_date = $year.'-'.$month.'-1';
+
+                $entries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpls WHERE wpls_date BETWEEN '$first_date' AND '$last_day' ORDER BY id DESC LIMIT $offset, $limit" );
+
+
+            }elseif($date_range == 'year'){
+                $last_day = date("Y-m-d");
+                $year = date("Y");
+
+                $first_date = $year.'-01-01';
+
+                $entries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpls WHERE wpls_date BETWEEN '$first_date' AND '$last_day' ORDER BY id DESC LIMIT $offset, $limit" );
+
+
+            }elseif($date_range == 'custom'){
+
+                $last_day = isset($_GET['before']) ? $_GET['before'] : date("Y-m-d");
+
+                $first_date = isset($_GET['after']) ? $_GET['after'] : '';
+
+                $entries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpls WHERE wpls_date BETWEEN '$first_date' AND '$last_day' ORDER BY id DESC LIMIT $offset, $limit" );
+
+
+            }
+
+            else{
+                $entries = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpls ORDER BY id DESC LIMIT $offset, $limit" );
+            }
+
+
+
+
+
 
             ?>
 
@@ -241,7 +310,10 @@ wp_enqueue_style( 'font-awesome-5' );
         <div class="visitors-paginate">
             <?php
 
-            $total = $wpdb->get_var( "SELECT COUNT(`id`) FROM {$wpdb->prefix}wpls" );
+            //var_dump($first_date);
+            //var_dump($last_day);
+
+            $total = $wpdb->get_var( "SELECT COUNT(`id`) FROM {$wpdb->prefix}wpls WHERE wpls_date BETWEEN '$first_date' AND '$last_day'" );
             $num_of_pages = ceil( $total / $limit );
             $page_links = paginate_links( array(
                 'base' => add_query_arg( 'pagenum', '%#%' ),
