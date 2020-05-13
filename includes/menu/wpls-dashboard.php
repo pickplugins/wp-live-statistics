@@ -10,6 +10,61 @@ wp_enqueue_script('chart.js');
     <h2><?php echo sprintf(__('%s  - Dashboard', 'job-board-manager'), wpls_plugin_name); ?></h2><br>
 
     <div class="wpls-dashboard">
+
+
+
+        <div class="page-visit" style="position: relative; height:40vh; width:80vw" >
+
+            <?php
+            $page_visit = wpls_page_visit();
+            ?>
+            <canvas id="page-visit-cart" height="40vh"></canvas>
+
+            <script>
+
+                page_visit = '<?php echo $page_visit; ?>';
+                var page_visit = JSON.parse( page_visit );
+
+
+                backgroundColor = ['#c060a1', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'];
+                //console.log(typeof labels);
+
+                jQuery(document).ready(function($) {
+
+                    var ctx = document.getElementById('page-visit-cart');
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: page_visit.labels,
+                            datasets: [{
+                                label: 'Page view',
+                                data: page_visit.data,
+                                //backgroundColor: backgroundColor,
+                                borderColor:'rgb(73, 98, 128)',
+                                borderWidth:1,
+                                pointHoverBackgroundColor: 'rgb(73, 98, 128)',
+                                pointBorderWidth: 1,
+                                pointHitRadius: 5,
+                                pointHoverBorderWidth: 15,
+
+                            }]
+                        },
+                    });
+
+                })
+
+
+            </script>
+
+
+
+
+
+
+        </div>
+
+
+
         <div class="dash-box">
             <div class="dash-box-title"><?php echo sprintf("%s Visitor Online", '<i class="fas fa-mobile-alt"></i> ') ?></div>
             <div class="dash-box-info">Estimate total visitor online right now on your website. <?php echo wpls_get_datetime(); ?></div>
@@ -368,7 +423,7 @@ wp_enqueue_script('chart.js');
 
         <div class="dash-box">
         <div class="dash-box-title"><?php echo sprintf("%s Top Refferers", '<i class="fas fa-mobile-alt"></i> ') ?></div>
-        <div class="dash-box-info">Top Referer link.</div>
+        <div class="dash-box-info">Top referrer domain.</div>
 
             <?php
             $top_referrer_doamins = wpls_top_referrer_doamins();
@@ -388,7 +443,7 @@ wp_enqueue_script('chart.js');
 
                     var ctx = document.getElementById('top_referrer_doamins');
                     var myChart = new Chart(ctx, {
-                        type: 'pie',
+                        type: 'horizontalBar',
                         data: {
                             labels: top_referrer_doamins.labels,
                             datasets: [{

@@ -837,3 +837,58 @@ function wpls_top_url_terms(){
 
     return json_encode($response);
 }
+
+
+
+
+
+function wpls_page_visit(){
+
+    $response = array();
+
+    $platform ="wpls_date";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT wpls_date, COUNT(*) AS wpls_date FROM $table GROUP BY wpls_date ORDER BY COUNT(wpls_date) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['wpls_date']) ? $count_platform[$i]['wpls_date'] : '';
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}
+
+
+
+
+
+
+
+
+
+
