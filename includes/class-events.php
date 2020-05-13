@@ -6,48 +6,89 @@ if(!class_exists('WPLiveStatisticsEvents')){
 
         public function __construct(){
 
+            $wpls_settings = get_option('wpls_settings');
+            $track_activity = isset($wpls_settings['track_activity']) ? $wpls_settings['track_activity'] : 'no';
 
 
-            add_action( 'publish_post', array( $this, '_publish_post' ), 10, 2 );
-            add_action( 'save_post', array( $this, '_save_post' ), 10, 3 );
-            add_action( 'deleted_post', array( $this, '_deleted_post' ) );
-            add_action( 'trashed_post', array( $this, '_trashed_post' ) );
-            add_action( 'untrashed_post', array( $this, '_untrashed_post' ) );
+            add_action( 'wp_head', array( $this, 'wpls_track_visitor' ) );
 
-            add_action( 'delete_attachment', array( $this, '_delete_attachment' ) );
-            add_action( 'edit_attachment', array( $this, '_edit_attachment' ) );
-            add_action( 'add_attachment', array( $this, '_add_attachment' ) );
+            if($track_activity == 'yes'){
+                add_action( 'publish_post', array( $this, '_publish_post' ), 10, 2 );
+                add_action( 'save_post', array( $this, '_save_post' ), 10, 3 );
+                add_action( 'deleted_post', array( $this, '_deleted_post' ) );
+                add_action( 'trashed_post', array( $this, '_trashed_post' ) );
+                add_action( 'untrashed_post', array( $this, '_untrashed_post' ) );
 
-            add_action( 'wp_insert_comment', array( $this, '_insert_comment' ) );
-            add_action( 'edit_comment', array( $this, '_edit_comment' ) );
-            add_action( 'trash_comment', array( $this, '_trash_comment' ) );
-            add_action( 'untrash_comment', array( $this, '_untrash_comment' ) );
-            add_action( 'spam_comment', array( $this, '_spam_comment' ) );
-            add_action( 'unspam_comment', array( $this, '_unspam_comment' ) );
-            add_action( 'delete_comment', array( $this, '_delete_comment' ) );
+                add_action( 'delete_attachment', array( $this, '_delete_attachment' ) );
+                add_action( 'edit_attachment', array( $this, '_edit_attachment' ) );
+                add_action( 'add_attachment', array( $this, '_add_attachment' ) );
 
-            add_action( 'switch_theme', array( $this, '_switch_theme' ) );
-            //add_action( 'delete_site_transient_update_themes', array( $this, '_delete_site_transient_update_themes' ) );
-            //add_action( 'upgrader_process_complete', array( $this, 'wp_a_log_upgrader_process_complete' ), 10, 2 );
+                add_action( 'wp_insert_comment', array( $this, '_insert_comment' ) );
+                add_action( 'edit_comment', array( $this, '_edit_comment' ) );
+                add_action( 'trash_comment', array( $this, '_trash_comment' ) );
+                add_action( 'untrash_comment', array( $this, '_untrash_comment' ) );
+                add_action( 'spam_comment', array( $this, '_spam_comment' ) );
+                add_action( 'unspam_comment', array( $this, '_unspam_comment' ) );
+                add_action( 'delete_comment', array( $this, '_delete_comment' ) );
 
-            //add_action( 'activated_plugin', array( $this, '_activated_plugin' ) );
-            //add_action( 'deactivated_plugin', array( $this, '_deactivated_plugin' ) );
-            //add_action( 'delete_plugins', array( $this, '_delete_plugins' ) );
+                add_action( 'switch_theme', array( $this, '_switch_theme' ) );
+                //add_action( 'delete_site_transient_update_themes', array( $this, '_delete_site_transient_update_themes' ) );
+                //add_action( 'upgrader_process_complete', array( $this, 'wp_a_log_upgrader_process_complete' ), 10, 2 );
 
-            add_action( 'wp_login', array( $this, '_wp_login' ) );
-            add_action( 'wp_logout', array( $this, '_wp_logout' ) );
+                //add_action( 'activated_plugin', array( $this, '_activated_plugin' ) );
+                //add_action( 'deactivated_plugin', array( $this, '_deactivated_plugin' ) );
+                //add_action( 'delete_plugins', array( $this, '_delete_plugins' ) );
 
-
-            add_action( 'profile_update', array( $this, '_profile_update' ) );
-            add_action( 'delete_user', array( $this, '_delete_user' ) );
-            add_action( 'user_register', array( $this, '_user_register' ) );
-            add_action( 'wp_login_failed', array( $this, '_login_failed' ) );
+                add_action( 'wp_login', array( $this, '_wp_login' ) );
+                add_action( 'wp_logout', array( $this, '_wp_logout' ) );
 
 
+                add_action( 'profile_update', array( $this, '_profile_update' ) );
+                add_action( 'delete_user', array( $this, '_delete_user' ) );
+                add_action( 'user_register', array( $this, '_user_register' ) );
+                add_action( 'wp_login_failed', array( $this, '_login_failed' ) );
+
+                add_action( 'woocommerce_order_status_completed', array( $this, 'woo_order_status_completed' ) );
+
+            }
 
 
         }
 
+
+        function woo_order_status_completed( $order_id ) {
+
+
+            $args = array();
+
+            $args['event'] = 'woo_order_completed';
+
+
+            $WPLiveStatisticsFunctions = new WPLiveStatisticsFunctions();
+
+            $WPLiveStatisticsFunctions->wpls_insert_visit($args);
+            //$WPLiveStatisticsFunctions->wpls_insert_online($args);
+
+        }
+
+
+        function wpls_track_visitor(){
+
+            $wpls_settings = get_option('wpls_settings');
+            $exclude_bots = isset($wpls_settings['exclude_bots']) ? $wpls_settings['exclude_bots'] : 'no';
+
+
+            $args = array();
+
+            $args['event'] = 'visit';
+
+
+            $WPLiveStatisticsFunctions = new WPLiveStatisticsFunctions();
+
+            $WPLiveStatisticsFunctions->wpls_insert_visit($args);
+            $WPLiveStatisticsFunctions->wpls_insert_online($args);
+
+        }
 
         function _save_post( $post_id, $post, $update ) {
 

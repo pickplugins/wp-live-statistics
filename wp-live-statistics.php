@@ -3,7 +3,7 @@
 Plugin Name: WP Live Statistics
 Plugin URI: 
 Description: Live visitor stats and page view stats
-Version: 1.3.0
+Version: 1.3.3
 Author: pickplugins
 Author URI: http://pickplugins.com
 License: GPLv2 or later

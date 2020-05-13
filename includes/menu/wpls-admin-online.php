@@ -62,7 +62,10 @@ $refresh_time = ($refresh_time > 3000) ? $refresh_time : 10000;
 
     <div class="visitors"></div>
 
-
+    <style type="text/css">
+        .visitors tr:nth-child(even) {background: #f5f5f5}
+        .visitors tr:nth-child(odd) {background: #FFF}
+    </style>
 
 
 

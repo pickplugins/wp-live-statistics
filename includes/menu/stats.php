@@ -11,25 +11,20 @@ wp_enqueue_script('chart.js');
 
 
 
-$tab = isset($_GET['tab']) ? $_GET['tab'] : 'url';
+$current_tab = isset($_GET['tab']) ? $_GET['tab'] : 'url';
 
 
 $stats_tabs = array();
 
-$stats_tabs[] = array(
-    'id' => 'url',
-    'title' => sprintf(__('%s URL','job-board-manager'),'<i class="fas fa-external-link-alt"></i>'),
-    'priority' => 1,
-    'active' => ($tab == 'url') ? true : false,
-);
+
 
 
 
 $stats_tabs[] = array(
-    'id' => 'device',
-    'title' => sprintf(__('%s Device','job-board-manager'),'<i class="fas fa-desktop"></i>'),
+    'id' => 'os',
+    'title' => sprintf(__('%s Operating System','job-board-manager'),'<i class="fas fa-desktop"></i>'),
     'priority' => 5,
-    'active' => ($tab == 'device') ? true : false,
+    'active' => ($current_tab == 'os') ? true : false,
 );
 
 
@@ -37,42 +32,49 @@ $stats_tabs[] = array(
     'id' => 'browser',
     'title' => sprintf(__('%s Browser','job-board-manager'),'<i class="fab fa-internet-explorer"></i>'),
     'priority' => 10,
-    'active' => ($tab == 'browser') ? true : false,
+    'active' => ($current_tab == 'browser') ? true : false,
 );
 
 $stats_tabs[] = array(
     'id' => 'screensize',
     'title' => sprintf(__('%s Screensize','job-board-manager'),'<i class="fas fa-mobile-alt"></i>'),
     'priority' => 15,
-    'active' => ($tab == 'screensize') ? true : false,
+    'active' => ($current_tab == 'screensize') ? true : false,
 );
 
 $stats_tabs[] = array(
     'id' => 'referer',
     'title' => sprintf(__('%s Referer','job-board-manager'),'<i class="fas fa-link"></i>'),
     'priority' => 20,
-    'active' => ($tab == 'referer') ? true : false,
+    'active' => ($current_tab == 'referer') ? true : false,
 );
 
 $stats_tabs[] = array(
     'id' => 'city',
     'title' => sprintf(__('%s City','job-board-manager'),'<i class="fas fa-map-pin"></i>'),
     'priority' => 25,
-    'active' => ($tab == 'city') ? true : false,
+    'active' => ($current_tab == 'city') ? true : false,
 );
 
 $stats_tabs[] = array(
     'id' => 'country',
     'title' => sprintf(__('%s Country','job-board-manager'),'<i class="fas fa-globe-americas"></i>'),
     'priority' => 30,
-    'active' => ($tab == 'country') ? true : false,
+    'active' => ($current_tab == 'country') ? true : false,
+);
+
+$stats_tabs[] = array(
+    'id' => 'url',
+    'title' => sprintf(__('%s URL','job-board-manager'),'<i class="fas fa-external-link-alt"></i>'),
+    'priority' => 35,
+    'active' => ($current_tab == 'url') ? true : false,
 );
 
 $stats_tabs[] = array(
     'id' => 'link_type',
     'title' => sprintf(__('%s Link Type','job-board-manager'),'<i class="fas fa-map-signs"></i>'),
-    'priority' => 35,
-    'active' => ($tab == 'link_type') ? true : false,
+    'priority' => 40,
+    'active' => ($current_tab == 'link_type') ? true : false,
 );
 
 
@@ -138,6 +140,7 @@ array_multisort($tabs_sorted, SORT_ASC, $stats_tabs);
                 <?php //echo $id; ?>
 
                 <?php
+                if($current_tab == $id)
                 do_action('wpls_stats_tabs_content_'.$id, $tab);
                 ?>
 
@@ -162,6 +165,7 @@ array_multisort($tabs_sorted, SORT_ASC, $stats_tabs);
     }
     .settings-tabs .tab-nav {
         background: #ececec !important;
+        padding:0px !important;
 
     }
 
@@ -172,6 +176,7 @@ array_multisort($tabs_sorted, SORT_ASC, $stats_tabs);
     .settings-tabs .tab-nav a {
         display: block;
         text-decoration: none;
+        padding: 12px 10px;
 
     }
 

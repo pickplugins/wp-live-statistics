@@ -4,7 +4,7 @@ Donate link:
 Tags:  wordpress stats, analytics, visitor count, page view count, live visitors, live stats, web stats, google analytics
 Requires at least: 3.8
 Tested up to: 5.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,8 +12,7 @@ Live website stats for wordpress sites.
 
 == Description ==
 
-Awesome web stats for your website.
-get stats for top things like broswers, operating system, Screen Size, Countries, Cities, Referers, Pages, User, link type and many more.
+Website stats for your website. get stats for top things like browsers, operating system,screen size, countries, cities, refferers, pages, user, link type and many more.
 
 
 
@@ -22,9 +21,9 @@ get stats for top things like broswers, operating system, Screen Size, Countries
 
 
 = Features =
-**Awsome Dashboard for stats**
+**Dashboard for stats**
 
-Awesome graphical representation for top site factors like Top OS, Top Screen Size, Top Browsers, Top Page Terms, Top Countries, Top Cities, Top Referers, Top Pages, Top User.
+Awesome graphical representation for top site factors like Top OS, Top Screen Size, Top Browsers, Top Page Terms, Top Countries, Top Cities, Top Reffrers, Top Pages, Top User.
 
 **Visitor Online**
 
@@ -51,7 +50,7 @@ You can exclude any user by id for tracing.
 == Installation ==
 
 1. Install as regular WordPress plugin.
-2. Go your Pluings setting via WordPress Dashboard and activate it.
+2. Go your Plugins setting via WordPress Dashboard and activate it.
 
 after activating plugin you will see menu "WP Live Stats"
 
@@ -78,6 +77,15 @@ take a test by visiting any page of your website.
 
 
 == Changelog ==
+
+= 1.3.3 =
+* 2020-05-13 - add - filter menu added.
+
+
+
+= 1.3.2 =
+* 2020-05-13 - add - user activity tracking on admin and front-end.
+
 
 = 1.3.1 =
 * 2020-05-12 - update - redesigned admin

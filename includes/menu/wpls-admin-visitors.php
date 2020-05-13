@@ -272,8 +272,21 @@ wp_enqueue_style( 'font-awesome-5' );
                                 ?>
                             </td>
                             <td>
-                                <?php $isunique = $entry->isunique; ?>
-                                <span title="Post View Unique Status: <?php echo $isunique; ?>" class="isunique-<?php echo $isunique; ?>"></span>
+                                <?php $isunique = isset($entry->isunique) ? $entry->isunique : ''; ?>
+                                <span title="Post View Unique Status: <?php echo $isunique; ?>" class="isunique">
+                                    <?php
+                                    if($isunique == 'yes'):
+                                        ?>
+                                        <i class="fas fa-check"></i>
+                                        <?php
+                                    else:
+                                        ?>
+                                        <i class="fas fa-times"></i>
+                                        <?php
+                                    endif;
+
+                                    ?>
+                                </span>
 
                             </td>
                             <td>
@@ -349,6 +362,10 @@ wp_enqueue_style( 'font-awesome-5' );
     .visitors-list{
         padding: 15px;
     }
+
+
+    .visitors-list tr:nth-child(even) {background: #f5f5f5}
+    .visitors-list tr:nth-child(odd) {background: #FFF}
 
     .date-range{
         padding: 10px 20px;

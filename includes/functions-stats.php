@@ -4,8 +4,14 @@
 if ( ! defined('ABSPATH')) exit;  // if direct access 
 	
 	
-add_action('wpls_stats_tabs_content_url','wpls_stats_tabs_content_url_date');
-add_action('wpls_stats_tabs_content_application','wpls_stats_tabs_content_url_date');
+//add_action('wpls_stats_tabs_content_url','wpls_stats_tabs_content_url_date');
+//add_action('wpls_stats_tabs_content_os','wpls_stats_tabs_content_url_date');
+//add_action('wpls_stats_tabs_content_browser','wpls_stats_tabs_content_url_date');
+//add_action('wpls_stats_tabs_content_screensize','wpls_stats_tabs_content_url_date');
+//add_action('wpls_stats_tabs_content_referer','wpls_stats_tabs_content_url_date');
+//add_action('wpls_stats_tabs_content_city','wpls_stats_tabs_content_url_date');
+//add_action('wpls_stats_tabs_content_country','wpls_stats_tabs_content_url_date');
+//add_action('wpls_stats_tabs_content_link_type','wpls_stats_tabs_content_url_date');
 
 
 
@@ -53,366 +59,69 @@ function wpls_stats_tabs_content_url_date($tab){
 
 }
 
-add_action('wpls_stats_tabs_content_url','wpls_stats_tabs_content_url_chart');
 
-function wpls_stats_tabs_content_url_chart($tab){
+add_action('wpls_stats_tabs_content_os','wpls_stats_tabs_content_os_chart');
+
+function wpls_stats_tabs_content_os_chart($tab){
 
     $data = array();
     $date_range = isset($_GET['date_range']) ? sanitize_text_field($_GET['date_range']) : '7_day';
 
-    if($date_range == '7_day'){
+    global $wpdb;
+    $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 1;
+    $limit = 200;
+    $offset = ( $pagenum - 1 ) * $limit;
 
-        $data['labels'] = "[";
-        $data['data'] = "[";
+    $platform = 'platform';
 
-        for ($i=1; $i<=7; $i++){
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
 
-            $day = date("d", strtotime($i." days ago"));
-            $month = date("m", strtotime($i." days ago"));
-            $year = date("Y", strtotime($i." days ago"));
+    $count_platform = $wpdb->get_results("SELECT platform, COUNT(*) AS platform FROM $table GROUP BY platform ORDER BY COUNT(platform) DESC LIMIT 10", ARRAY_A);
 
-            $month_name = date("M", strtotime($i." days ago"));
 
-            //var_dump($month_name);
+    $i=0;
 
-            $args = array(
-                'post_type' => 'post',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
+    $data['labels'] = "[";
+    $data['data'] = "[";
 
+    while($total_rows>$i){
 
-            $label =  $day.'-'.$month_name;
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['platform']) ? $count_platform[$i]['platform'] : '';
 
-            $data['labels'] .= '"'.$label.'",';
-            $data['data'] .= "$wp_query->found_posts,";
 
+        $data['labels'] .= '"'.$platform_os.'",';
+        $data['data'] .= "$platform_total,";
 
-            //$html.=  '{ label: "'.$day.'/'.$month.'", y: '.$wp_query->found_posts.' },';
-
-            //var_dump();
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-        //echo '<pre>'.var_export($data['labels'], true).'</pre>';
-
-        //echo '<pre>'.var_export($data['data'], true).'</pre>';
-
-    }elseif($date_range == 'last_30_day'){
-
-
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-        for ($i=1; $i<=30; $i++){
-
-            $day = date("d", strtotime($i." days ago"));
-            $month = date("m", strtotime($i." days ago"));
-            $year = date("Y", strtotime($i." days ago"));
-
-            $month_name = date("M", strtotime($i." days ago"));
-
-            $args = array(
-                'post_type' => 'post',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-            $label =  $day.'/'.$month_name;
-
-            $data['labels'] .= '"'.$label.'",';
-            $data['data'] .= "$wp_query->found_posts,";
-
-
-            //$html.=  '{ label: "'.$day.'/'.$month.'", y: '.$wp_query->found_posts.' },';
-
-            //var_dump();
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-    }elseif($date_range == 'this_month'){
-
-        $total_day = date('t');
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-        for ($i=1; $i<=$total_day; $i++){
-
-            $day = $i;
-            $month = date("m");
-            $year = date("Y");
-
-            $month_name = date("M");
-
-
-            $args = array(
-                'post_type' => 'post',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-
-            $label =  $day.'/'.$month_name;
-
-            $data['labels'] .= '"'.$label.'",';
-            $data['data'] .= "$wp_query->found_posts,";
-
-
-            //$html.=  '{ label: "'.$day.'/'.$month.'", y: '.$wp_query->found_posts.' },';
-
-            //var_dump();
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-    }elseif($date_range == 'last_month'){
-
-        $total_day = date("t", strtotime("1 month ago"));
-
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-        for ($i=1; $i<=$total_day; $i++){
-
-            $day = $i;
-            $month = date("m", strtotime("1 month ago"));
-            $year = date("Y");
-
-            $month_name = date("M", strtotime("1 month ago"));
-
-
-            $args = array(
-                'post_type' => 'post',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-            $label =  $day.'/'.$month_name;
-
-            $data['labels'] .= '"'.$label.'",';
-            $data['data'] .= "$wp_query->found_posts,";
-
-
-            //$html.=  '{ label: "'.$day.'/'.$month.'", y: '.$wp_query->found_posts.' },';
-
-            //var_dump();
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-    }elseif($date_range == 'year'){
-
-        $current_month =  date("m");
-
-        //var_dump(date("M", strtotime("1 month ago")));
-
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-        for ($i=1; $i<=$current_month; $i++){
-
-
-            $month = $i;
-            $year = date("Y");
-            //$monthNum  = 3;
-            $month_name = date('M', mktime(0, 0, 0, $month)); // March
-
-            //$month_name = date("M");
-
-
-
-
-
-
-
-            $args = array(
-                'post_type' => 'post',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        //'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-
-            $label =  $month.'/'.$month_name;
-
-            $data['labels'] .= '"'.$label.'",';
-
-            $data['data'] .= "$wp_query->found_posts,";
-
-            wp_reset_query();
-            //var_dump();
-
-        }
-
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-    }elseif($date_range == 'custom'){
-
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-
-        $after_date = isset($_GET['after']) ? sanitize_text_field($_GET['after']) : '';
-        $after = explode('-',$after_date);
-
-        $after_y = isset($after[0]) ? $after[0] : '';
-        $after_m = isset($after[1]) ? $after[1] : '';
-        $after_d = isset($after[2]) ? $after[2] : '';
-
-
-        $before_date = isset($_GET['before']) ? sanitize_text_field($_GET['before']) : '';
-        $before = explode('-',$before_date);
-        $before_y = isset($before[0]) ? $before[0] : '';
-        $before_m = isset($before[1]) ? $before[1] : '';
-        $before_d = isset($before[2]) ? $before[2] : '';
-
-
-
-        $start    = new DateTime($after_date);
-        $start->modify('first day of this month');
-
-        $end      = new DateTime($before_date);
-        $end->modify('first day of next month');
-
-        $interval = DateInterval::createFromDateString('1 month');
-        $period   = new DatePeriod($start, $interval, $end);
-
-        //var_dump($interval);
-
-
-
-        $i = 0;
-        foreach ($period as $dt) {
-
-            $all_month_year[$i] = array($dt->format("Y"),$dt->format("m"));
-
-            //echo $dt->format("Y-m") . "<br>\n";
-            $i++;
-        }
-
-
-
-        //var_dump($interval);
-
-        //var_dump(date("M", strtotime("1 month ago")));
-
-
-        foreach($all_month_year as $month_year){
-
-            $year = $month_year[0];
-            $month = $month_year[1];
-
-            $month_name = date('M', mktime(0, 0, 0, $month)); // March
-
-
-            $args = array(
-                'post_type' => 'post',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        //'day'   => $day,
-                    )
-                ),
-            );
-
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-
-            $label =  $month_name.'/'.$year;
-
-            $data['labels'] .= '"'.$label.'",';
-
-            $data['data'] .= "$wp_query->found_posts,";
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-
+        $i++;
     }
 
+    $data['labels'] .= "]";
+    $data['data'] .= "]";
 
     ?>
 
-    <canvas id="job-posting-chart" style="width: 100%; height: 600px !important;"></canvas>
+    <canvas id="chart" style="width: 100%; height: 600px !important;"></canvas>
 
     <script>
 
         jQuery(document).ready(function($) {
 
-            var ctx = document.getElementById('job-posting-chart');
+            var ctx = document.getElementById('chart');
             var myChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: <?php echo $data['labels']; ?>,
                     datasets: [{
-                        label: 'job post',
+                        label: 'Operating System',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor: 'rgba(0, 115, 169, 0.1)',
-                        borderColor: 'rgba(0, 115, 169, 0.8)',
+                        backgroundColor:'rgba(255, 99, 132, 0.2)',
+                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
-
                         pointBorderWidth: 1,
                         pointHitRadius: 5,
                         pointHoverBorderWidth: 15,
@@ -425,6 +134,7 @@ function wpls_stats_tabs_content_url_chart($tab){
 
 
     </script>
+
 
     <?php
 
@@ -432,380 +142,69 @@ function wpls_stats_tabs_content_url_chart($tab){
 }
 
 
-add_action('wpls_stats_tabs_content_application','wpls_stats_tabs_content_application_chart');
 
-function wpls_stats_tabs_content_application_chart($tab){
+add_action('wpls_stats_tabs_content_browser','wpls_stats_tabs_content_browser_chart');
+
+function wpls_stats_tabs_content_browser_chart($tab){
 
     $data = array();
     $date_range = isset($_GET['date_range']) ? sanitize_text_field($_GET['date_range']) : '7_day';
 
-    if($date_range == '7_day'){
+    global $wpdb;
+    $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 1;
+    $limit = 200;
+    $offset = ( $pagenum - 1 ) * $limit;
 
-        $data['labels'] = "[";
-        $data['data'] = "[";
+    $platform = 'browser';
 
-        for ($i=1; $i<=7; $i++){
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
 
-            $day = date("d", strtotime($i." days ago"));
-            $month = date("m", strtotime($i." days ago"));
-            $year = date("Y", strtotime($i." days ago"));
+    $count_platform = $wpdb->get_results("SELECT browser, COUNT(*) AS browser FROM $table GROUP BY browser ORDER BY COUNT(browser) DESC LIMIT 10", ARRAY_A);
 
-            $month_name = date("M", strtotime($i." days ago"));
 
-            //var_dump($month_name);
+    $i=0;
 
-            $args = array(
-                'post_type' => 'application',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
+    $data['labels'] = "[";
+    $data['data'] = "[";
 
+    while($total_rows>$i){
 
-            $label =  $day.'-'.$month_name;
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['browser']) ? $count_platform[$i]['browser'] : 0;
 
-            $data['labels'] .= '"'.$label.'",';
-            $data['data'] .= "$wp_query->found_posts,";
 
+        $data['labels'] .= '"'.$platform_os.'",';
+        $data['data'] .= "$platform_total,";
 
-            //$html.=  '{ label: "'.$day.'/'.$month.'", y: '.$wp_query->found_posts.' },';
-
-            //var_dump();
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-        //echo '<pre>'.var_export($data['labels'], true).'</pre>';
-
-        //echo '<pre>'.var_export($data['data'], true).'</pre>';
-
-    }elseif($date_range == 'last_30_day'){
-
-
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-        for ($i=1; $i<=30; $i++){
-
-            $day = date("d", strtotime($i." days ago"));
-            $month = date("m", strtotime($i." days ago"));
-            $year = date("Y", strtotime($i." days ago"));
-
-            $month_name = date("M", strtotime($i." days ago"));
-
-            $args = array(
-                'post_type' => 'application',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-            $label =  $day.'/'.$month_name;
-
-            $data['labels'] .= '"'.$label.'",';
-            $data['data'] .= "$wp_query->found_posts,";
-
-
-            //$html.=  '{ label: "'.$day.'/'.$month.'", y: '.$wp_query->found_posts.' },';
-
-            //var_dump();
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-    }elseif($date_range == 'this_month'){
-
-        $total_day = date('t');
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-        for ($i=1; $i<=$total_day; $i++){
-
-            $day = $i;
-            $month = date("m");
-            $year = date("Y");
-
-            $month_name = date("M");
-
-
-            $args = array(
-                'post_type' => 'application',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-
-            $label =  $day.'/'.$month_name;
-
-            $data['labels'] .= '"'.$label.'",';
-            $data['data'] .= "$wp_query->found_posts,";
-
-
-            //$html.=  '{ label: "'.$day.'/'.$month.'", y: '.$wp_query->found_posts.' },';
-
-            //var_dump();
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-    }elseif($date_range == 'last_month'){
-
-        $total_day = date("t", strtotime("1 month ago"));
-
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-        for ($i=1; $i<=$total_day; $i++){
-
-            $day = $i;
-            $month = date("m", strtotime("1 month ago"));
-            $year = date("Y");
-
-            $month_name = date("M", strtotime("1 month ago"));
-
-
-            $args = array(
-                'post_type' => 'application',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-            $label =  $day.'/'.$month_name;
-
-            $data['labels'] .= '"'.$label.'",';
-            $data['data'] .= "$wp_query->found_posts,";
-
-
-            //$html.=  '{ label: "'.$day.'/'.$month.'", y: '.$wp_query->found_posts.' },';
-
-            //var_dump();
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-    }elseif($date_range == 'year'){
-
-        $current_month =  date("m");
-
-        //var_dump(date("M", strtotime("1 month ago")));
-
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-        for ($i=1; $i<=$current_month; $i++){
-
-
-            $month = $i;
-            $year = date("Y");
-            //$monthNum  = 3;
-            $month_name = date('M', mktime(0, 0, 0, $month)); // March
-
-            //$month_name = date("M");
-
-
-
-
-
-
-
-            $args = array(
-                'post_type' => 'application',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        //'day'   => $day,
-                    ),
-                ),
-            );
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-
-            $label =  $month.'/'.$month_name;
-
-            $data['labels'] .= '"'.$label.'",';
-
-            $data['data'] .= "$wp_query->found_posts,";
-
-            wp_reset_query();
-            //var_dump();
-
-        }
-
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-    }elseif($date_range == 'custom'){
-
-        $data['labels'] = "[";
-        $data['data'] = "[";
-
-
-        $after_date = isset($_GET['after']) ? sanitize_text_field($_GET['after']) : '';
-        $after = explode('-',$after_date);
-
-        $after_y = isset($after[0]) ? $after[0] : '';
-        $after_m = isset($after[1]) ? $after[1] : '';
-        $after_d = isset($after[2]) ? $after[2] : '';
-
-
-        $before_date = isset($_GET['before']) ? sanitize_text_field($_GET['before']) : '';
-        $before = explode('-',$before_date);
-        $before_y = isset($before[0]) ? $before[0] : '';
-        $before_m = isset($before[1]) ? $before[1] : '';
-        $before_d = isset($before[2]) ? $before[2] : '';
-
-
-
-        $start    = new DateTime($after_date);
-        $start->modify('first day of this month');
-
-        $end      = new DateTime($before_date);
-        $end->modify('first day of next month');
-
-        $interval = DateInterval::createFromDateString('1 month');
-        $period   = new DatePeriod($start, $interval, $end);
-
-        //var_dump($interval);
-
-
-
-        $i = 0;
-        foreach ($period as $dt) {
-
-            $all_month_year[$i] = array($dt->format("Y"),$dt->format("m"));
-
-            //echo $dt->format("Y-m") . "<br>\n";
-            $i++;
-        }
-
-
-
-        //var_dump($interval);
-
-        //var_dump(date("M", strtotime("1 month ago")));
-
-
-        foreach($all_month_year as $month_year){
-
-            $year = $month_year[0];
-            $month = $month_year[1];
-
-            $month_name = date('M', mktime(0, 0, 0, $month)); // March
-
-
-            $args = array(
-                'post_type' => 'application',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'date_query' => array(
-                    array(
-                        'year'  => $year,
-                        'month' => $month,
-                        //'day'   => $day,
-                    )
-                ),
-            );
-
-            $wp_query = new WP_Query( $args );
-            //echo '{ x: '.($i+1).' , y: '.$wp_query->post_count.' },';
-
-
-            $label =  $month_name.'/'.$year;
-
-            $data['labels'] .= '"'.$label.'",';
-
-            $data['data'] .= "$wp_query->found_posts,";
-
-        }
-
-        $data['labels'] .= "]";
-        $data['data'] .= "]";
-
-
+        $i++;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    $data['labels'] .= "]";
+    $data['data'] .= "]";
 
     ?>
 
-    <canvas id="application-chart" style="width: 100%; height: 600px !important;"></canvas>
+    <canvas id="chart-browser" style="width: 100%; height: 600px !important;"></canvas>
 
     <script>
 
         jQuery(document).ready(function($) {
 
-            var ctx = document.getElementById('application-chart');
+            var ctx = document.getElementById('chart-browser');
             var myChart = new Chart(ctx, {
-                type: 'line',
+                type: 'horizontalBar',
                 data: {
                     labels: <?php echo $data['labels']; ?>,
                     datasets: [{
-                        label: 'job post',
+                        label: 'Browser',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor: 'rgba(0, 115, 169, 0.1)',
-                        borderColor: 'rgba(0, 115, 169, 0.8)',
+                        backgroundColor:'rgba(255, 99, 132, 0.2)',
+                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
-
                         pointBorderWidth: 1,
                         pointHitRadius: 5,
                         pointHoverBorderWidth: 15,
@@ -818,6 +217,509 @@ function wpls_stats_tabs_content_application_chart($tab){
 
 
     </script>
+
+
+    <?php
+
+
+}
+
+
+
+add_action('wpls_stats_tabs_content_screensize','wpls_stats_tabs_content_screensize_chart');
+
+function wpls_stats_tabs_content_screensize_chart($tab){
+
+    $data = array();
+    $date_range = isset($_GET['date_range']) ? sanitize_text_field($_GET['date_range']) : '7_day';
+
+    global $wpdb;
+    $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 1;
+    $limit = 200;
+    $offset = ( $pagenum - 1 ) * $limit;
+
+    $platform = 'screensize';
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT screensize, COUNT(*) AS screensize FROM $table GROUP BY screensize ORDER BY COUNT(screensize) DESC LIMIT 10", ARRAY_A);
+
+
+    $i=0;
+
+    $data['labels'] = "[";
+    $data['data'] = "[";
+
+    while($total_rows>$i){
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['screensize']) ? $count_platform[$i]['screensize'] : 0;
+
+
+        $data['labels'] .= '"'.$platform_os.'",';
+        $data['data'] .= "$platform_total,";
+
+        $i++;
+    }
+
+    $data['labels'] .= "]";
+    $data['data'] .= "]";
+
+    ?>
+
+    <canvas id="chart-screensize" style="width: 100%; height: 600px !important;"></canvas>
+
+    <script>
+
+        jQuery(document).ready(function($) {
+
+            var ctx = document.getElementById('chart-screensize');
+            var myChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: <?php echo $data['labels']; ?>,
+                    datasets: [{
+                        label: 'Screen sizes',
+                        data: <?php echo $data['data']; ?>,
+                        backgroundColor:'rgba(255, 99, 132, 0.2)',
+                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        borderWidth:1,
+                        pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                        pointBorderWidth: 1,
+                        pointHitRadius: 5,
+                        pointHoverBorderWidth: 15,
+
+                    }]
+                },
+            });
+
+        })
+
+
+    </script>
+
+
+    <?php
+
+
+}
+
+
+add_action('wpls_stats_tabs_content_city','wpls_stats_tabs_content_city_chart');
+
+function wpls_stats_tabs_content_city_chart($tab){
+
+    $data = array();
+    $date_range = isset($_GET['date_range']) ? sanitize_text_field($_GET['date_range']) : '7_day';
+
+    global $wpdb;
+    $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 1;
+    $limit = 200;
+    $offset = ( $pagenum - 1 ) * $limit;
+
+    $platform = 'city';
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT city, COUNT(*) AS city FROM $table GROUP BY city ORDER BY COUNT(city) DESC LIMIT 10", ARRAY_A);
+
+
+    $i=0;
+
+    $data['labels'] = "[";
+    $data['data'] = "[";
+
+    while($total_rows>$i){
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_os = !empty($platform_os) ? $platform_os : 'Unknown';
+        $platform_total = isset($count_platform[$i]['city']) ? $count_platform[$i]['city'] : 0;
+
+
+        $data['labels'] .= '"'.$platform_os.'",';
+        $data['data'] .= "$platform_total,";
+
+        $i++;
+    }
+
+    $data['labels'] .= "]";
+    $data['data'] .= "]";
+
+    ?>
+
+    <canvas id="chart-city" style="width: 100%; height: 600px !important;"></canvas>
+
+    <script>
+
+        jQuery(document).ready(function($) {
+
+            var ctx = document.getElementById('chart-city');
+            var myChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: <?php echo $data['labels']; ?>,
+                    datasets: [{
+                        label: 'City',
+                        data: <?php echo $data['data']; ?>,
+                        backgroundColor:'rgba(255, 99, 132, 0.2)',
+                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        borderWidth:1,
+                        pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                        pointBorderWidth: 1,
+                        pointHitRadius: 5,
+                        pointHoverBorderWidth: 15,
+
+                    }]
+                },
+            });
+
+        })
+
+
+    </script>
+
+
+    <?php
+
+
+}
+
+add_action('wpls_stats_tabs_content_country','wpls_stats_tabs_content_country_chart');
+
+function wpls_stats_tabs_content_country_chart($tab){
+
+    $data = array();
+    $date_range = isset($_GET['date_range']) ? sanitize_text_field($_GET['date_range']) : '7_day';
+
+    global $wpdb;
+    $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 1;
+    $limit = 200;
+    $offset = ( $pagenum - 1 ) * $limit;
+
+    $platform = 'countryName';
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT countryName, COUNT(*) AS countryName FROM $table GROUP BY countryName ORDER BY COUNT(countryName) DESC LIMIT 10", ARRAY_A);
+
+
+    $i=0;
+
+    $data['labels'] = "[";
+    $data['data'] = "[";
+
+    while($total_rows>$i){
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_os = !empty($platform_os) ? $platform_os : 'Unknown';
+        $platform_total = isset($count_platform[$i]['countryName']) ? $count_platform[$i]['countryName'] : 0;
+
+
+        $data['labels'] .= '"'.$platform_os.'",';
+        $data['data'] .= "$platform_total,";
+
+        $i++;
+    }
+
+    $data['labels'] .= "]";
+    $data['data'] .= "]";
+
+    ?>
+
+    <canvas id="chart-country" style="width: 100%; height: 600px !important;"></canvas>
+
+    <script>
+
+        jQuery(document).ready(function($) {
+
+            var ctx = document.getElementById('chart-country');
+            var myChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: <?php echo $data['labels']; ?>,
+                    datasets: [{
+                        label: 'Country',
+                        data: <?php echo $data['data']; ?>,
+                        backgroundColor:'rgba(255, 99, 132, 0.2)',
+                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        borderWidth:1,
+                        pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                        pointBorderWidth: 1,
+                        pointHitRadius: 5,
+                        pointHoverBorderWidth: 15,
+
+                    }]
+                },
+            });
+
+        })
+
+
+    </script>
+
+
+    <?php
+
+
+}
+
+
+add_action('wpls_stats_tabs_content_link_type','wpls_stats_tabs_content_link_type_chart');
+
+function wpls_stats_tabs_content_link_type_chart($tab){
+
+    $data = array();
+    $date_range = isset($_GET['date_range']) ? sanitize_text_field($_GET['date_range']) : '7_day';
+
+    global $wpdb;
+    $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 1;
+    $limit = 200;
+    $offset = ( $pagenum - 1 ) * $limit;
+
+    $platform = 'url_term';
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT url_term, COUNT(*) AS url_term FROM $table GROUP BY url_term ORDER BY COUNT(url_term) DESC LIMIT 10", ARRAY_A);
+
+
+    $i=0;
+
+    $data['labels'] = "[";
+    $data['data'] = "[";
+
+    while($total_rows>$i){
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_os = !empty($platform_os) ? $platform_os : 'Unknown';
+        $platform_total = isset($count_platform[$i]['url_term']) ? $count_platform[$i]['url_term'] : 0;
+
+
+        $data['labels'] .= '"'.$platform_os.'",';
+        $data['data'] .= "$platform_total,";
+
+        $i++;
+    }
+
+    $data['labels'] .= "]";
+    $data['data'] .= "]";
+
+    ?>
+
+    <canvas id="chart-url_term" style="width: 100%; height: 600px !important;"></canvas>
+
+    <script>
+
+        jQuery(document).ready(function($) {
+
+            var ctx = document.getElementById('chart-url_term');
+            var myChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: <?php echo $data['labels']; ?>,
+                    datasets: [{
+                        label: 'Link type',
+                        data: <?php echo $data['data']; ?>,
+                        backgroundColor:'rgba(255, 99, 132, 0.2)',
+                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        borderWidth:1,
+                        pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                        pointBorderWidth: 1,
+                        pointHitRadius: 5,
+                        pointHoverBorderWidth: 15,
+
+                    }]
+                },
+            });
+
+        })
+
+
+    </script>
+
+
+    <?php
+
+
+}
+
+
+
+add_action('wpls_stats_tabs_content_referer','wpls_stats_tabs_content_referer_chart');
+
+function wpls_stats_tabs_content_referer_chart($tab){
+
+    $data = array();
+    $date_range = isset($_GET['date_range']) ? sanitize_text_field($_GET['date_range']) : '7_day';
+
+    global $wpdb;
+    $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 1;
+    $limit = 200;
+    $offset = ( $pagenum - 1 ) * $limit;
+
+    $platform = 'referer_doamin';
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT referer_doamin, COUNT(*) AS referer_doamin FROM $table GROUP BY referer_doamin ORDER BY COUNT(referer_doamin) DESC LIMIT 10", ARRAY_A);
+
+
+    $i=0;
+
+    $data['labels'] = "[";
+    $data['data'] = "[";
+
+    while($total_rows>$i){
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_os = !empty($platform_os) ? $platform_os : 'Unknown';
+        $platform_total = isset($count_platform[$i]['referer_doamin']) ? $count_platform[$i]['referer_doamin'] : 0;
+
+
+        $data['labels'] .= '"'.$platform_os.'",';
+        $data['data'] .= "$platform_total,";
+
+        $i++;
+    }
+
+    $data['labels'] .= "]";
+    $data['data'] .= "]";
+
+    ?>
+
+    <canvas id="chart-referer_doamin" style="width: 100%; height: 600px !important;"></canvas>
+
+    <script>
+
+        jQuery(document).ready(function($) {
+
+            var ctx = document.getElementById('chart-referer_doamin');
+            var myChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: <?php echo $data['labels']; ?>,
+                    datasets: [{
+                        label: 'Referer domain',
+                        data: <?php echo $data['data']; ?>,
+                        backgroundColor:'rgba(255, 99, 132, 0.2)',
+                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        borderWidth:1,
+                        pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                        pointBorderWidth: 1,
+                        pointHitRadius: 5,
+                        pointHoverBorderWidth: 15,
+
+                    }]
+                },
+            });
+
+        })
+
+
+    </script>
+
+
+    <?php
+
+
+}
+
+
+
+
+add_action('wpls_stats_tabs_content_url','wpls_stats_tabs_content_url_chart');
+
+function wpls_stats_tabs_content_url_chart($tab){
+
+    $data = array();
+    $date_range = isset($_GET['date_range']) ? sanitize_text_field($_GET['date_range']) : '7_day';
+
+    global $wpdb;
+    $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 1;
+    $limit = 200;
+    $offset = ( $pagenum - 1 ) * $limit;
+
+    $platform = 'url_id';
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT url_id, COUNT(*) AS url_id FROM $table GROUP BY url_id ORDER BY COUNT(url_id) DESC LIMIT 10", ARRAY_A);
+
+
+    $i=0;
+
+    $data['labels'] = "[";
+    $data['data'] = "[";
+
+    while($total_rows>$i){
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+
+        $platform_os = (is_numeric($platform_os)) ? get_the_title($platform_os) : $platform_os;
+
+        $platform_total = isset($count_platform[$i]['url_id']) ? $count_platform[$i]['url_id'] : 0;
+
+
+        $data['labels'] .= '"'.$platform_os.'",';
+        $data['data'] .= "$platform_total,";
+
+        $i++;
+    }
+
+    $data['labels'] .= "]";
+    $data['data'] .= "]";
+
+    ?>
+
+    <canvas id="chart-url_id" style="width: 100%; height: 600px !important;"></canvas>
+
+    <script>
+
+        jQuery(document).ready(function($) {
+
+            var ctx = document.getElementById('chart-url_id');
+            var myChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: <?php echo $data['labels']; ?>,
+                    datasets: [{
+                        label: 'Links',
+                        data: <?php echo $data['data']; ?>,
+                        backgroundColor:'rgba(255, 99, 132, 0.2)',
+                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        borderWidth:1,
+                        pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                        pointBorderWidth: 1,
+                        pointHitRadius: 5,
+                        pointHoverBorderWidth: 15,
+
+                    }]
+                },
+            });
+
+        })
+
+
+    </script>
+
 
     <?php
 

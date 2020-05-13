@@ -141,7 +141,7 @@ if ( ! defined('ABSPATH')) exit; // if direct access
 										{
 											$page_url = $result[$i][$url_id];
 										}
-									$top_url_id .='<td><a href="'.$page_url.'">'.$page_url.'</a>';
+									$top_url_id .='<td><a href="'.$page_url.'">'.substr($page_url, 0, 40).'</a>';
 									$top_url_id .="</td>";
 									
 									$top_url_id .="<td>".$count_url_id[$i]['url_id'];
