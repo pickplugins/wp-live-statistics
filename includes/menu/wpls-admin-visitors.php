@@ -4,7 +4,7 @@ if ( ! defined('ABSPATH')) exit;  // if direct access
 wp_enqueue_style( 'font-awesome-5' );
 ?>
 <div class="wrap">
-    <div id="icon-tools" class="icon32"><br></div><h2><?php echo sprintf(__('%s Visitors', 'wp-live-statistics'), wpls_plugin_name)?></h2>
+    <h2><?php echo sprintf(__('%s  - Visitors', 'job-board-manager'), wpls_plugin_name); ?></h2><br>
 
     <div class="wpls-visitors">
         <?php

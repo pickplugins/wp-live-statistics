@@ -3,10 +3,11 @@ if ( ! defined('ABSPATH')) exit;  // if direct access
 
 
 wp_enqueue_style( 'font-awesome-5' );
+wp_enqueue_script('chart.js');
 ?>
 
 <div class="wrap">
-    <div id="icon-tools" class="icon32"><br></div><h2><?php echo sprintf(__('%s Dashboard', 'wp-live-statistics'), wpls_plugin_name)?></h2>
+    <h2><?php echo sprintf(__('%s  - Dashboard', 'job-board-manager'), wpls_plugin_name); ?></h2><br>
 
     <div class="wpls-dashboard">
         <div class="dash-box">
@@ -81,61 +82,50 @@ wp_enqueue_style( 'font-awesome-5' );
             <div class="dash-box-title"><?php echo sprintf("%s Top OS", '<i class="fas fa-mobile-alt"></i> ') ?></div>
             <div class="dash-box-info">Stats based on top operating system.</div>
 
-        <div id="TopOS" style="height:350px;width:100%; "></div>
-        <script>
-            jQuery(document).ready(function($){
-              var data =
-                        [
-                            <?php echo wpls_TopOS("platform"); ?>
-                        ];
+            <?php
+            $wpls_top_os = wpls_top_os();
+            ?>
+            <canvas id="top_os" ></canvas>
 
-              var TopOS = $.jqplot ('TopOS', [data],
-                {
+            <script>
 
-                    seriesDefaults: {
-                    // Make this a pie chart.
+                wpls_top_os = '<?php echo $wpls_top_os; ?>';
+                var wpls_top_os = JSON.parse( wpls_top_os );
 
-                    shadow:false,
-                    renderer: $.jqplot.PieRenderer,
-                    rendererOptions: {
-                        showDataLabels: true,
-                      // Put data labels on the pie slices.
-                      // By default, labels show the percentage of the slice.
 
-                    }
-                  },
+                backgroundColor = ['#c060a1', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'];
+                //console.log(typeof labels);
 
-                    highlighter: {
-                        show: true,
-                        sizeAdjust: 1,
-                        tooltipOffset: 9
-                    },
+                jQuery(document).ready(function($) {
 
-                  legend: {
-                        show:true,
-                        location: 's',
-                        renderer: $.jqplot.EnhancedLegendRenderer,
-                        rendererOptions:
-                            {
-                            numberColumns: 3,
-                            disableIEFading: false,
-                            border: 'none',
-                            },
+                    var ctx = document.getElementById('top_os');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: wpls_top_os.labels,
+                            datasets: [{
+                                label: 'Operating System',
+                                data: wpls_top_os.data,
+                                backgroundColor: backgroundColor,
+                                borderColor:'rgba(255, 99, 132, 0.2)',
+                                borderWidth:1,
+                                pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                                pointBorderWidth: 1,
+                                pointHitRadius: 5,
+                                pointHoverBorderWidth: 15,
+
+                            }]
                         },
-                    grid: {
-                        background: 'transparent',
-                        borderWidth: 0,
-                        shadow: false,
+                    });
 
-                        },
-                    highlighter: {show: true,formatString:'%s',tooltipLocation:'n',useAxesFormatters:false,},
-
-                }
-              );
+                })
 
 
-            });
-        </script>
+            </script>
+
+
+
+
 
 
         </div>
@@ -143,66 +133,46 @@ wp_enqueue_style( 'font-awesome-5' );
         <div class="dash-box">
         <div class="dash-box-title"><?php echo sprintf("%s Top Screen Size", '<i class="fas fa-mobile-alt"></i> ') ?></div>
         <div class="dash-box-info">Top device screen size.</div>
-        <div id="TopScreenSize" style="height:350px;width:100%; "></div>
 
-        <script>
-            jQuery(document).ready(function($){
-              var data =
-                        [
-                            <?php echo wpls_TopScreenSize("screensize"); ?>
-                        ];
+            <?php
+            $wpls_top_screensize = wpls_top_screensize();
+            ?>
+            <canvas id="top_screensize" ></canvas>
 
-              var TopOS = $.jqplot ('TopScreenSize', [data],
-                {
+            <script>
 
+                wpls_top_screensize = '<?php echo $wpls_top_screensize; ?>';
+                var wpls_top_screensize = JSON.parse( wpls_top_screensize );
 
+                backgroundColor = ['#c060a1', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'];
+                //console.log(typeof labels);
 
+                jQuery(document).ready(function($) {
 
-                    seriesDefaults: {
-                    // Make this a pie chart.
+                    var ctx = document.getElementById('top_screensize');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels:  wpls_top_screensize.labels,
+                            datasets: [{
+                                label: 'Screen Size',
+                                data: wpls_top_screensize.data,
+                                backgroundColor: backgroundColor,
+                                borderColor:'rgba(255, 99, 132, 0.2)',
+                                borderWidth:1,
+                                pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                                pointBorderWidth: 1,
+                                pointHitRadius: 5,
+                                pointHoverBorderWidth: 15,
 
-                    shadow:false,
-                    renderer: $.jqplot.PieRenderer,
-                    rendererOptions: {
-                        showDataLabels: true,
-                      // Put data labels on the pie slices.
-                      // By default, labels show the percentage of the slice.
-
-                    }
-                  },
-
-                    highlighter: {
-                        show: true,
-                        sizeAdjust: 1,
-                        tooltipOffset: 9
-                    },
-
-                  legend: {
-                        show:true,
-                        location: 's',
-                        renderer: $.jqplot.EnhancedLegendRenderer,
-                        rendererOptions:
-                            {
-                            numberColumns: 3,
-                            disableIEFading: false,
-                            border: 'none',
-                            },
+                            }]
                         },
-                    grid: {
-                        background: 'transparent',
-                        borderWidth: 0,
-                        shadow: false,
+                    });
 
-                        },
-                    highlighter: {show: true,formatString:'%s',tooltipLocation:'n',useAxesFormatters:false,},
-
-                }
-              );
+                })
 
 
-            });
-        </script>
-
+            </script>
 
 
         </div>
@@ -210,67 +180,50 @@ wp_enqueue_style( 'font-awesome-5' );
 
         <div class="dash-box">
         <div class="dash-box-title"><?php echo sprintf("%s Top Browsers", '<i class="fas fa-mobile-alt"></i> ') ?></div>
-        <div class="dash-box-info">Top broswer by view count.</div>
-        <div id="TopBrowsers" style="height:350px;width:100%; "></div>
-
-        <script>
-            jQuery(document).ready(function($){
-              var data =
-                        [
-                            <?php echo wpls_TopBrowsers("browser"); ?>
-                        ];
-
-              var TopOS = $.jqplot ('TopBrowsers', [data],
-                {
+        <div class="dash-box-info">Top browsers by view count.</div>
 
 
 
+            <?php
+            $wpls_top_browsers = wpls_top_browsers();
+            ?>
+            <canvas id="top_browsers" ></canvas>
 
-                    seriesDefaults: {
-                    // Make this a pie chart.
+            <script>
 
-                    shadow:false,
-                    renderer: $.jqplot.PieRenderer,
-                    rendererOptions: {
-                        showDataLabels: true,
-                      // Put data labels on the pie slices.
-                      // By default, labels show the percentage of the slice.
+                wpls_top_browsers = '<?php echo $wpls_top_browsers; ?>';
+                var wpls_top_browsers = JSON.parse( wpls_top_browsers );
 
-                    }
-                  },
 
-                    highlighter: {
-                        show: true,
-                        sizeAdjust: 1,
-                        tooltipOffset: 9
-                    },
+                backgroundColor = ['#c060a1', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'];
+                //console.log(typeof labels);
 
-                  legend: {
-                        show:true,
-                        location: 's',
-                        renderer: $.jqplot.EnhancedLegendRenderer,
-                        rendererOptions:
-                            {
-                            numberColumns: 3,
-                            disableIEFading: false,
-                            border: 'none',
-                            },
+                jQuery(document).ready(function($) {
+
+                    var ctx = document.getElementById('top_browsers');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: wpls_top_browsers.labels,
+                            datasets: [{
+                                label: 'Browser',
+                                data: wpls_top_browsers.data,
+                                backgroundColor: backgroundColor,
+                                borderColor:'rgba(255, 99, 132, 0.2)',
+                                borderWidth:1,
+                                pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                                pointBorderWidth: 1,
+                                pointHitRadius: 5,
+                                pointHoverBorderWidth: 15,
+
+                            }]
                         },
-                    grid: {
-                        background: 'transparent',
-                        borderWidth: 0,
-                        shadow: false,
+                    });
 
-                        },
-                    highlighter: {show: true,formatString:'%s',tooltipLocation:'n',useAxesFormatters:false,},
-
-                }
-              );
+                })
 
 
-            });
-        </script>
-
+            </script>
 
 
         </div>
@@ -278,65 +231,46 @@ wp_enqueue_style( 'font-awesome-5' );
         <div class="dash-box">
         <div class="dash-box-title"><?php echo sprintf("%s Top Page Terms", '<i class="fas fa-mobile-alt"></i> ') ?></div>
         <div class="dash-box-info">Top link category.</div>
-        <div id="TopPageTerms" style="height:350px;width:100%; "></div>
 
-        <script>
-            jQuery(document).ready(function($){
-              var data =
-                        [
-                            <?php echo wpls_TopPageTerms("url_term"); ?>
-                        ];
+            <?php
+            $wpls_top_url_terms = wpls_top_url_terms();
+            ?>
+            <canvas id="top_url_terms" ></canvas>
 
-              var TopOS = $.jqplot ('TopPageTerms', [data],
-                {
+            <script>
 
+                wpls_top_url_terms = '<?php echo $wpls_top_url_terms; ?>';
+                var wpls_top_url_terms = JSON.parse( wpls_top_url_terms );
 
+                backgroundColor = ['#c060a1', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'];
+                //console.log(typeof labels);
 
+                jQuery(document).ready(function($) {
 
-                    seriesDefaults: {
-                    // Make this a pie chart.
+                    var ctx = document.getElementById('top_url_terms');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: wpls_top_url_terms.labels,
+                            datasets: [{
+                                label: 'URL terms',
+                                data: wpls_top_url_terms.data,
+                                backgroundColor: backgroundColor,
+                                borderColor:'rgba(255, 99, 132, 0.2)',
+                                borderWidth:1,
+                                pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                                pointBorderWidth: 1,
+                                pointHitRadius: 5,
+                                pointHoverBorderWidth: 15,
 
-                    shadow:false,
-                    renderer: $.jqplot.PieRenderer,
-                    rendererOptions: {
-                        showDataLabels: true,
-                      // Put data labels on the pie slices.
-                      // By default, labels show the percentage of the slice.
-
-                    }
-                  },
-
-                    highlighter: {
-                        show: true,
-                        sizeAdjust: 1,
-                        tooltipOffset: 9
-                    },
-
-                  legend: {
-                        show:true,
-                        location: 's',
-                        renderer: $.jqplot.EnhancedLegendRenderer,
-                        rendererOptions:
-                            {
-                            numberColumns: 3,
-                            disableIEFading: false,
-                            border: 'none',
-                            },
+                            }]
                         },
-                    grid: {
-                        background: 'transparent',
-                        borderWidth: 0,
-                        shadow: false,
+                    });
 
-                        },
-                    highlighter: {show: true,formatString:'%s',tooltipLocation:'n',useAxesFormatters:false,},
-
-                }
-              );
+                })
 
 
-            });
-        </script>
+            </script>
 
         </div>
 
@@ -344,194 +278,138 @@ wp_enqueue_style( 'font-awesome-5' );
         <div class="dash-box">
         <div class="dash-box-title"><?php echo sprintf("%s Top Countries", '<i class="fas fa-mobile-alt"></i> ') ?></div>
         <div class="dash-box-info">Top country by view count.</div>
-        <div id="TopCountries" style="height:350px;width:100%; "></div>
 
-        <script>
-            jQuery(document).ready(function($){
-              var data =
-                        [
-                        <?php echo wpls_TopCountries("countryName"); ?>
-                        ];
+            <?php
+            $wpls_top_countries = wpls_top_countries();
+            ?>
+            <canvas id="top_countries" ></canvas>
 
-              var TopOS = $.jqplot ('TopCountries', [data],
-                {
+            <script>
 
+                wpls_top_countries = '<?php echo $wpls_top_countries; ?>';
+                var wpls_top_countries = JSON.parse( wpls_top_countries );
 
+                backgroundColor = ['#c060a1', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'];
+                //console.log(typeof labels);
 
+                jQuery(document).ready(function($) {
 
-                    seriesDefaults: {
-                    // Make this a pie chart.
+                    var ctx = document.getElementById('top_countries');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: wpls_top_countries.labels,
+                            datasets: [{
+                                label: 'Countries',
+                                data: wpls_top_countries.data,
+                                backgroundColor: backgroundColor,
+                                borderColor:'rgba(255, 99, 132, 0.2)',
+                                borderWidth:1,
+                                pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                                pointBorderWidth: 1,
+                                pointHitRadius: 5,
+                                pointHoverBorderWidth: 15,
 
-                    shadow:false,
-                    renderer: $.jqplot.PieRenderer,
-                    rendererOptions: {
-                        showDataLabels: true,
-                      // Put data labels on the pie slices.
-                      // By default, labels show the percentage of the slice.
-
-                    }
-                  },
-
-                    highlighter: {
-                        show: true,
-                        sizeAdjust: 1,
-                        tooltipOffset: 9
-                    },
-
-                  legend: {
-                        show:true,
-                        location: 's',
-                        renderer: $.jqplot.EnhancedLegendRenderer,
-                        rendererOptions:
-                            {
-                            numberColumns: 3,
-                            disableIEFading: false,
-                            border: 'none',
-                            },
+                            }]
                         },
-                    grid: {
-                        background: 'transparent',
-                        borderWidth: 0,
-                        shadow: false,
+                    });
 
-                        },
-                    highlighter: {show: true,formatString:'%s',tooltipLocation:'n',useAxesFormatters:false,},
-
-                }
-              );
+                })
 
 
-            });
-        </script>
+            </script>
 
         </div>
         <div class="dash-box">
         <div class="dash-box-title"><?php echo sprintf("%s Top Cities", '<i class="fas fa-mobile-alt"></i> ') ?></div>
         <div class="dash-box-info">Top city by view count.</div>
-        <div id="TopCities" style="height:350px;width:100%; "></div>
 
-        <script>
-            jQuery(document).ready(function($){
-              var data =
-                        [
-                        <?php echo wpls_TopCities("city"); ?>
-                        ];
+            <?php
+            $wpls_top_cities = wpls_top_cities();
+            ?>
+            <canvas id="top_cities" ></canvas>
 
-              var TopOS = $.jqplot ('TopCities', [data],
-                {
+            <script>
 
+                wpls_top_cities = '<?php echo $wpls_top_cities; ?>';
+                var wpls_top_cities = JSON.parse( wpls_top_cities );
 
+                backgroundColor = ['#c060a1', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'];
+                //console.log(typeof labels);
 
+                jQuery(document).ready(function($) {
 
-                    seriesDefaults: {
-                    // Make this a pie chart.
+                    var ctx = document.getElementById('top_cities');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: wpls_top_cities.labels,
+                            datasets: [{
+                                label: 'Cities',
+                                data: wpls_top_cities.data,
+                                backgroundColor: backgroundColor,
+                                borderColor:'rgba(255, 99, 132, 0.2)',
+                                borderWidth:1,
+                                pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                                pointBorderWidth: 1,
+                                pointHitRadius: 5,
+                                pointHoverBorderWidth: 15,
 
-                    shadow:false,
-                    renderer: $.jqplot.PieRenderer,
-                    rendererOptions: {
-                        showDataLabels: true,
-                      // Put data labels on the pie slices.
-                      // By default, labels show the percentage of the slice.
-
-                    }
-                  },
-
-                    highlighter: {
-                        show: true,
-                        sizeAdjust: 1,
-                        tooltipOffset: 9
-                    },
-
-                  legend: {
-                        show:true,
-                        location: 's',
-                        renderer: $.jqplot.EnhancedLegendRenderer,
-                        rendererOptions:
-                            {
-                            numberColumns: 3,
-                            disableIEFading: false,
-                            border: 'none',
-                            },
+                            }]
                         },
-                    grid: {
-                        background: 'transparent',
-                        borderWidth: 0,
-                        shadow: false,
+                    });
 
-                        },
-                    highlighter: {show: true,formatString:'%s',tooltipLocation:'n',useAxesFormatters:false,},
-
-                }
-              );
+                })
 
 
-            });
-        </script>
+            </script>
 
         </div>
 
         <div class="dash-box">
         <div class="dash-box-title"><?php echo sprintf("%s Top Refferers", '<i class="fas fa-mobile-alt"></i> ') ?></div>
         <div class="dash-box-info">Top Referer link.</div>
-        <div id="TopReferers" style="height:350px;width:100%; "></div>
 
-        <script>
-            jQuery(document).ready(function($){
-              var data =
-                        [
-                        <?php echo wpls_TopReferers("referer_doamin"); ?>
-                        ];
+            <?php
+            $top_referrer_doamins = wpls_top_referrer_doamins();
+            ?>
+            <canvas id="top_referrer_doamins" ></canvas>
 
-              var TopOS = $.jqplot ('TopReferers', [data],
-                {
+            <script>
 
+                top_referrer_doamins = '<?php echo $top_referrer_doamins; ?>';
+                var top_referrer_doamins = JSON.parse( top_referrer_doamins );
 
 
+                backgroundColor = ['#c060a1', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'];
+                //console.log(typeof labels);
 
-                    seriesDefaults: {
-                    // Make this a pie chart.
+                jQuery(document).ready(function($) {
 
-                    shadow:false,
-                    renderer: $.jqplot.PieRenderer,
-                    rendererOptions: {
-                        showDataLabels: true,
-                      // Put data labels on the pie slices.
-                      // By default, labels show the percentage of the slice.
+                    var ctx = document.getElementById('top_referrer_doamins');
+                    var myChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: top_referrer_doamins.labels,
+                            datasets: [{
+                                label: 'Domains',
+                                data: top_referrer_doamins.data,
+                                backgroundColor: backgroundColor,
+                                borderColor:'rgba(255, 99, 132, 0.2)',
+                                borderWidth:1,
+                                pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                                pointBorderWidth: 1,
+                                pointHitRadius: 5,
+                                pointHoverBorderWidth: 15,
 
-                    }
-                  },
-
-                    highlighter: {
-                        show: true,
-                        sizeAdjust: 1,
-                        tooltipOffset: 9
-                    },
-
-                  legend: {
-                        show:true,
-                        location: 's',
-                        renderer: $.jqplot.EnhancedLegendRenderer,
-                        rendererOptions:
-                            {
-                            numberColumns: 3,
-                            disableIEFading: false,
-                            border: 'none',
-                            },
+                            }]
                         },
-                    grid: {
-                        background: 'transparent',
-                        borderWidth: 0,
-                        shadow: false,
+                    });
 
-                        },
-                    highlighter: {show: true,formatString:'%s',tooltipLocation:'n',useAxesFormatters:false,},
-
-                }
-              );
+                })
 
 
-            });
-        </script>
+            </script>
 
         </div>
 
@@ -539,65 +417,46 @@ wp_enqueue_style( 'font-awesome-5' );
         <div class="dash-box">
         <div class="dash-box-title"><?php echo sprintf("%s Top User", '<i class="fas fa-mobile-alt"></i> ') ?></div>
         <div class="dash-box-info">Top active user(by id) on your site.</div>
-        <div id="TopUser" style="height:350px;width:100%; "></div>
 
-        <script>
-            jQuery(document).ready(function($){
-              var data =
-                        [
-                        <?php echo wpls_TopUser("userid"); ?>
-                        ];
+            <?php
+            $wpls_top_userids = wpls_top_userids();
+            ?>
+            <canvas id="top_userids" style=""></canvas>
 
-              var TopOS = $.jqplot ('TopUser', [data],
-                {
+            <script>
 
+                wpls_top_userids = '<?php echo $wpls_top_userids; ?>';
+                var wpls_top_userids = JSON.parse( wpls_top_userids );
 
+                backgroundColor = ['#c060a1', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'];
+                //console.log(typeof labels);
 
+                jQuery(document).ready(function($) {
 
-                    seriesDefaults: {
-                    // Make this a pie chart.
+                    var ctx = document.getElementById('top_userids');
+                    var myChart = new Chart(ctx, {
+                        type: 'horizontalBar',
+                        data: {
+                            labels: wpls_top_userids.labels,
+                            datasets: [{
+                                label: 'Users',
+                                data: wpls_top_userids.data,
+                                backgroundColor: backgroundColor,
+                                borderColor:'rgba(255, 99, 132, 0.2)',
+                                borderWidth:1,
+                                pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
+                                pointBorderWidth: 1,
+                                pointHitRadius: 5,
+                                pointHoverBorderWidth: 15,
 
-                    shadow:false,
-                    renderer: $.jqplot.PieRenderer,
-                    rendererOptions: {
-                        showDataLabels: true,
-                      // Put data labels on the pie slices.
-                      // By default, labels show the percentage of the slice.
-
-                    }
-                  },
-
-                    highlighter: {
-                        show: true,
-                        sizeAdjust: 1,
-                        tooltipOffset: 9
-                    },
-
-                  legend: {
-                        show:true,
-                        location: 's',
-                        renderer: $.jqplot.EnhancedLegendRenderer,
-                        rendererOptions:
-                            {
-                            numberColumns: 3,
-                            disableIEFading: false,
-                            border: 'none',
-                            },
+                            }]
                         },
-                    grid: {
-                        background: 'transparent',
-                        borderWidth: 0,
-                        shadow: false,
+                    });
 
-                        },
-                    highlighter: {show: true,formatString:'%s',tooltipLocation:'n',useAxesFormatters:false,},
-
-                }
-              );
+                })
 
 
-            });
-        </script>
+            </script>
 
         </div>
         <div class="dash-box">

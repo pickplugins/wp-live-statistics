@@ -416,7 +416,6 @@ if ( ! defined('ABSPATH')) exit; // if direct access
 
 
 
-
 //query top operating system(Platform)
 	function wpls_TopOS($platform){
 
@@ -448,3 +447,393 @@ if ( ! defined('ABSPATH')) exit; // if direct access
 	}
 
 
+
+
+
+function wpls_top_os(){
+
+    $response = array();
+
+    $platform ="platform";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT platform, COUNT(*) AS platform FROM $table GROUP BY platform ORDER BY COUNT(platform) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+
+        if($i > 9) break;
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['platform']) ? $count_platform[$i]['platform'] : '';
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}
+
+
+function wpls_top_browsers(){
+
+    $response = array();
+
+    $platform ="browser";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT browser, COUNT(*) AS browser FROM $table GROUP BY browser ORDER BY COUNT(browser) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+        if($i > 9) break;
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['browser']) ? $count_platform[$i]['browser'] : '';
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}
+
+
+function wpls_top_screensize(){
+
+    $response = array();
+
+    $platform ="screensize";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT screensize, COUNT(*) AS screensize FROM $table GROUP BY screensize ORDER BY COUNT(screensize) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+        if($i > 9) break;
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['screensize']) ? $count_platform[$i]['screensize'] : '';
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}
+
+
+
+
+function wpls_top_countries(){
+
+    $response = array();
+
+    $platform ="countryName";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT countryName, COUNT(*) AS countryName FROM $table GROUP BY countryName ORDER BY COUNT(countryName) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+        if($i > 9) break;
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['countryName']) ? $count_platform[$i]['countryName'] : '';
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}
+
+
+
+function wpls_top_cities(){
+
+    $response = array();
+
+    $platform ="city";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT city, COUNT(*) AS city FROM $table GROUP BY city ORDER BY COUNT(city) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+        if($i > 9) break;
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['city']) ? $count_platform[$i]['city'] : '';
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}
+
+function wpls_top_referrer_doamins(){
+
+    $response = array();
+
+    $platform ="referer_doamin";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT referer_doamin, COUNT(*) AS referer_doamin FROM $table GROUP BY referer_doamin ORDER BY COUNT(referer_doamin) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+        if($i > 9) break;
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['referer_doamin']) ? $count_platform[$i]['referer_doamin'] : '';
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}
+
+function wpls_top_url_ids(){
+
+    $response = array();
+
+    $platform ="url_id";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT url_id, COUNT(*) AS url_id FROM $table GROUP BY url_id ORDER BY COUNT(url_id) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+
+        if($i > 9) break;
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['url_id']) ? $count_platform[$i]['url_id'] : '';
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}
+
+function wpls_top_userids(){
+
+    $response = array();
+
+    $platform ="userid";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT userid, COUNT(*) AS userid FROM $table GROUP BY userid ORDER BY COUNT(userid) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+
+        if($i > 9) break;
+
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['userid']) ? $count_platform[$i]['userid'] : '';
+
+        $platform_total = !empty($platform_total) ? $platform_total : 0;
+
+        $user = get_user_by( 'id', $platform_os );
+        $platform_os = isset($user->user_login) ? $user->user_login : 'Guest';
+
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}
+
+function wpls_top_url_terms(){
+
+    $response = array();
+
+    $platform ="url_term";
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT $platform FROM $table GROUP BY $platform ORDER BY COUNT($platform) DESC LIMIT 20", ARRAY_A);
+    $total_rows = $wpdb->num_rows;
+
+    $count_platform = $wpdb->get_results("SELECT url_term, COUNT(*) AS url_term FROM $table GROUP BY url_term ORDER BY COUNT(url_term) DESC LIMIT 10", ARRAY_A);
+
+    $top_platform ="";
+
+    $i=0;
+
+    $label = array();
+    $count = array();
+
+    while($total_rows>$i){
+        if($i > 9) break;
+        $platform_os = isset($result[$i][$platform]) ? $result[$i][$platform] : '';
+        $platform_total = isset($count_platform[$i]['url_term']) ? $count_platform[$i]['url_term'] : '';
+
+        $top_platform.= "['".$platform_os."(".$platform_total.")',".$platform_total."],";
+
+        $label[] = $platform_os;
+        $count[] = $platform_total;
+
+
+        $i++;
+    }
+
+    $response['labels'] = $label;
+    $response['data'] = $count;
+
+
+    return json_encode($response);
+}

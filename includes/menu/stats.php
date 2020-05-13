@@ -105,7 +105,7 @@ array_multisort($tabs_sorted, SORT_ASC, $stats_tabs);
 
 ?>
 <div class="wrap">
-    <h2><?php echo __('Job Board Manager - Stats','job-board-manager'); ?></h2><br>
+    <h2><?php echo sprintf(__('%s  - Stats', 'job-board-manager'), wpls_plugin_name); ?></h2><br>
 
     <div class="settings-tabs vertical">
 

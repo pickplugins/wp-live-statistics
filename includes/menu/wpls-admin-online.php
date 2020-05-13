@@ -12,7 +12,7 @@ $refresh_time = ($refresh_time > 3000) ? $refresh_time : 10000;
 
 
 <div class="wrap">
-    <h2>WP Live Statistics - Online</h2>
+    <h2><?php echo sprintf(__('%s  - Visitors Online', 'job-board-manager'), wpls_plugin_name); ?></h2><br>
 
     <div class="onlinecount">
 

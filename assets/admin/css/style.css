@@ -251,7 +251,7 @@
 }
 
 .wpls-dashboard .dash-box {
-  background: none repeat scroll 0 0 rgb(93, 126, 163);
+  background: #fff;
   border: 1px solid rgb(122, 170, 223);
   display: inline-block;
   height: auto;
@@ -278,27 +278,26 @@
 }
 
 .wpls-dashboard .dash-box-info {
-  color: rgb(238, 238, 238);
   font-size: 14px;
   padding: 10px;
 }
 
 .wpls-dashboard .dash-box .total-online {
-  color: rgb(255, 255, 255);
+
   font-size: 40px;
   padding: 30px 10px 10px;
   text-align: center;
 }
 
 .wpls-dashboard .dash-box .total-session {
-  color: rgb(255, 255, 255);
+
   font-size: 40px;
   padding: 30px 10px 10px;
   text-align: center;
 }
 
 .wpls-dashboard .dash-box .unique-visitor {
-  color: rgb(255, 255, 255);
+
   font-size: 40px;
   padding: 30px 10px 10px;
   text-align: center;
@@ -311,7 +310,7 @@
 .wpls-dashboard .dash-box .para-data-table {
   border: 1px solid rgb(221, 221, 221);
   border-collapse: collapse;
-  color: rgb(255, 255, 255);
+
   text-align: left;
 }
 
@@ -326,7 +325,7 @@
 }
 
 .wpls-dashboard .dash-box .para-data-table a {
-  color: rgb(255, 255, 255);
+
   text-decoration: none;
 }
 

@@ -38,7 +38,7 @@ $wpls_settings = get_option('wpls_settings');
 
 ?>
 <div class="wrap">
-	<div id="icon-tools" class="icon32"><br></div><h2><?php echo sprintf(__('%s Settings', 'wp-live-statistics'), wpls_plugin_name)?></h2>
+    <h2><?php echo sprintf(__('%s  - Settings', 'job-board-manager'), wpls_plugin_name); ?></h2><br>
 		<form  method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
 	        <input type="hidden" name="wpls_hidden" value="Y">
             <input type="hidden" name="tab" value="<?php echo $current_tab; ?>">
