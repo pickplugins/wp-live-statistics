@@ -11,7 +11,7 @@ wp_enqueue_script('chart.js');
 
 
 
-$current_tab = isset($_GET['tab']) ? $_GET['tab'] : 'url';
+$current_tab = isset($_GET['tab']) ? $_GET['tab'] : 'os';
 
 
 $stats_tabs = array();
@@ -119,7 +119,7 @@ array_multisort($tabs_sorted, SORT_ASC, $stats_tabs);
                 $hidden = isset($tab['hidden']) ? $tab['hidden'] : false;
                 ?>
                 <li <?php if(!empty($data_visible)):  ?> data_visible="<?php echo $data_visible; ?>" <?php endif; ?> class="tab-nav <?php if($hidden) echo 'hidden';?> <?php if($active) echo 'active';?>" data-id="<?php echo $id; ?>">
-                    <a href="<?php echo admin_url().'admin.php?page=wpls_admin_filter&tab='.$id;?>"><?php echo $title; ?></a>
+                    <a href="<?php echo admin_url().'admin.php?page=wpls_filter&tab='.$id;?>"><?php echo $title; ?></a>
 
                 </li>
                 <?php

@@ -887,6 +887,21 @@ function wpls_page_visit(){
 
 
 
+function wpls_view_count_by_date($date){
+
+    $response = array();
+
+    global $wpdb;
+    $table = $wpdb->prefix . "wpls";
+    $result = $wpdb->get_results("SELECT * FROM $table WHERE wpls_date='$date'", ARRAY_A);
+    $count = $wpdb->num_rows;
+
+
+
+    return $count;
+}
+
+
 
 
 

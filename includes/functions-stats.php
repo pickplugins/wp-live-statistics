@@ -29,21 +29,22 @@ function wpls_stats_tabs_content_url_date($tab){
 
     $date_format = 'yy-mm-dd';
 
+    $root_url = admin_url().'admin.php?page=wpls_filter';
+
 
     ?>
     <div class="date-range">
-        <a class="<?php echo ($date_range == 'year') ? 'active' : ''; ?>" href="<?php echo admin_url(); ?>edit.php?post_type=job&page=job_bm_stats&tab=<?php echo $tab; ?>&date_range=year"><?php echo __('Year','job-board-manager'); ?></a>
-        <a class="<?php echo ($date_range == 'last_month') ? 'active' : ''; ?>" href="<?php echo admin_url(); ?>edit.php?post_type=job&page=job_bm_stats&tab=<?php echo $tab; ?>&date_range=last_month"><?php echo __('Last Month','job-board-manager'); ?></a>
-        <a class="<?php echo ($date_range == 'this_month') ? 'active' : ''; ?>" href="<?php echo admin_url(); ?>edit.php?post_type=job&page=job_bm_stats&tab=<?php echo $tab; ?>&date_range=this_month"><?php echo __('This Month','job-board-manager'); ?></a>
-        <a class="<?php echo ($date_range == 'last_30_day') ? 'active' : ''; ?>" href="<?php echo admin_url(); ?>edit.php?post_type=job&page=job_bm_stats&tab=<?php echo $tab; ?>&date_range=last_30_day"><?php echo __('Last 30 Days','job-board-manager'); ?></a>
-        <a class=" <?php echo ($date_range == '7_day') ? 'active' : ''; ?>" href="<?php echo admin_url(); ?>edit.php?post_type=job&page=job_bm_stats&tab=<?php echo $tab; ?>&date_range=7_day"><?php echo __('Last 7 Days','job-board-manager'); ?></a>
+        <a class="<?php echo ($date_range == 'year') ? 'active' : ''; ?>" href="<?php echo $root_url; ?>&tab=<?php echo $tab; ?>&date_range=year"><?php echo __('Year','job-board-manager'); ?></a>
+        <a class="<?php echo ($date_range == 'last_month') ? 'active' : ''; ?>" href="<?php echo $root_url; ?>&tab=<?php echo $tab; ?>&date_range=last_month"><?php echo __('Last Month','job-board-manager'); ?></a>
+        <a class="<?php echo ($date_range == 'this_month') ? 'active' : ''; ?>" href="<?php echo $root_url; ?>&tab=<?php echo $tab; ?>&date_range=this_month"><?php echo __('This Month','job-board-manager'); ?></a>
+        <a class="<?php echo ($date_range == 'last_30_day') ? 'active' : ''; ?>" href="<?php echo $root_url; ?>&tab=<?php echo $tab; ?>&date_range=last_30_day"><?php echo __('Last 30 Days','job-board-manager'); ?></a>
+        <a class=" <?php echo ($date_range == '7_day') ? 'active' : ''; ?>" href="<?php echo $root_url; ?>&tab=<?php echo $tab; ?>&date_range=7_day"><?php echo __('Last 7 Days','job-board-manager'); ?></a>
 
         <form class="date-range-custom <?php echo ($date_range == 'custom') ? 'active' : ''; ?>" style="display:inline-block" method="GET" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
             <label><?php echo __('Custom:','job-board-manager'); ?></label>
             <input size="8" title="<?php echo __('Start date','job-board-manager'); ?>" type="text" class="job_bm_date" autocomplete="off" name="after" value="<?php echo $after_date; ?>" placeholder="<?php echo date('Y-m-d'); ?>" />
             <input size="8" title="<?php echo __('End date','job-board-manager'); ?>" type="text" class="job_bm_date" autocomplete="off" name="before" value="<?php echo $before_date; ?>" placeholder="<?php echo date('Y-m-d'); ?>" />
-            <input type="hidden"  name="post_type" value="job" />
-            <input type="hidden"  name="page" value="job_bm_stats" />
+            <input type="hidden"  name="page" value="wpls_filter" />
             <input type="hidden"  name="tab" value="<?php echo $tab; ?>" />
             <input type="hidden"  name="date_range" value="custom" />
             <input class="button" value="<?php echo __('Submit','job-board-manager'); ?>" type="submit">
@@ -118,8 +119,8 @@ function wpls_stats_tabs_content_os_chart($tab){
                     datasets: [{
                         label: 'Operating System',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor:'rgba(255, 99, 132, 0.2)',
-                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        backgroundColor:'rgb(88, 101, 177)',
+                        borderColor:'rgb(88, 101, 177)',
                         borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
                         pointBorderWidth: 1,
@@ -201,8 +202,8 @@ function wpls_stats_tabs_content_browser_chart($tab){
                     datasets: [{
                         label: 'Browser',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor:'rgba(255, 99, 132, 0.2)',
-                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        backgroundColor:'rgb(88, 101, 177)',
+                        borderColor:'rgb(88, 101, 177)',
                         borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
                         pointBorderWidth: 1,
@@ -284,8 +285,8 @@ function wpls_stats_tabs_content_screensize_chart($tab){
                     datasets: [{
                         label: 'Screen sizes',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor:'rgba(255, 99, 132, 0.2)',
-                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        backgroundColor:'rgb(88, 101, 177)',
+                        borderColor:'rgb(88, 101, 177)',
                         borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
                         pointBorderWidth: 1,
@@ -367,8 +368,8 @@ function wpls_stats_tabs_content_city_chart($tab){
                     datasets: [{
                         label: 'City',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor:'rgba(255, 99, 132, 0.2)',
-                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        backgroundColor:'rgb(88, 101, 177)',
+                        borderColor:'rgb(88, 101, 177)',
                         borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
                         pointBorderWidth: 1,
@@ -449,8 +450,8 @@ function wpls_stats_tabs_content_country_chart($tab){
                     datasets: [{
                         label: 'Country',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor:'rgba(255, 99, 132, 0.2)',
-                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        backgroundColor:'rgb(88, 101, 177)',
+                        borderColor:'rgb(88, 101, 177)',
                         borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
                         pointBorderWidth: 1,
@@ -532,8 +533,8 @@ function wpls_stats_tabs_content_link_type_chart($tab){
                     datasets: [{
                         label: 'Link type',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor:'rgba(255, 99, 132, 0.2)',
-                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        backgroundColor:'rgb(88, 101, 177)',
+                        borderColor:'rgb(88, 101, 177)',
                         borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
                         pointBorderWidth: 1,
@@ -616,8 +617,8 @@ function wpls_stats_tabs_content_referer_chart($tab){
                     datasets: [{
                         label: 'Referer domain',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor:'rgba(255, 99, 132, 0.2)',
-                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        backgroundColor:'rgb(88, 101, 177)',
+                        borderColor:'rgb(88, 101, 177)',
                         borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
                         pointBorderWidth: 1,
@@ -703,8 +704,8 @@ function wpls_stats_tabs_content_url_chart($tab){
                     datasets: [{
                         label: 'Links',
                         data: <?php echo $data['data']; ?>,
-                        backgroundColor:'rgba(255, 99, 132, 0.2)',
-                        borderColor:'rgba(255, 99, 132, 0.2)',
+                        backgroundColor:'rgb(88, 101, 177)',
+                        borderColor:'rgb(88, 101, 177)',
                         borderWidth:1,
                         pointHoverBackgroundColor: 'rgba(0, 115, 169, 0.1)',
                         pointBorderWidth: 1,

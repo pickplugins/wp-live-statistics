@@ -14,6 +14,8 @@ if(!class_exists('WPLiveStatisticsFunctions')){
 
         function wpls_insert_visit($args){
 
+            $wpls_settings = get_option('wpls_settings');
+            $exclude_bots = isset($wpls_settings['exclude_bots']) ? $wpls_settings['exclude_bots'] : 'no';
 
 
             // date time data
@@ -30,6 +32,7 @@ if(!class_exists('WPLiveStatisticsFunctions')){
             $screensize = wpls_get_screensize();
 
 
+            if(strpos($browser,'Bot' ) && $exclude_bots == 'yes') return;
 
             // geo data
             $ip = sanitize_text_field($_SERVER['REMOTE_ADDR']);

@@ -4,7 +4,7 @@ Donate link:
 Tags:  wordpress stats, analytics, visitor count, page view count, live visitors, live stats, web stats, google analytics
 Requires at least: 3.8
 Tested up to: 5.4
-Stable tag: 1.3.2
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,10 +78,11 @@ take a test by visiting any page of your website.
 
 == Changelog ==
 
+= 1.3.4 =
+* 2020-05-14 - add - added page view menu
+
 = 1.3.3 =
 * 2020-05-13 - add - filter menu added.
-
-
 
 = 1.3.2 =
 * 2020-05-13 - add - user activity tracking on admin and front-end.
